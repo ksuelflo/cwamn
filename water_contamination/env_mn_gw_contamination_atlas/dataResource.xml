@@ -1,0 +1,54 @@
+
+<!DOCTYPE dataResource SYSTEM "dataResource.dtd" >
+<dataResource>
+    <baseName>env_mn_gw_contamination_atlas</baseName>
+    <descriptiveName>Minnesota Groundwater Contamination Atlas</descriptiveName>
+    <publisher>Minnesota Pollution Control Agency</publisher>
+    <publisherID>us_mn_state_pca</publisherID>
+    <currentAsofDate>2020-07-01</currentAsofDate>
+    <topicCategories>
+        <topicCategory type="ISO 19115">environment</topicCategory>
+    </topicCategories>
+    <resourceIdentifiers>
+        <resourceGUID>{c56255f3-dcab-4fd6-b36d-16ee494933c4}</resourceGUID>
+    </resourceIdentifiers>
+    <dataSubResources>
+		<dataSubResource>
+            <subResourceType>external</subResourceType>
+            <subResourceIdentifiers>
+                <subResourceGUID>{6fd8377f-a199-4269-9b4c-bff78701a53e}</subResourceGUID>
+            </subResourceIdentifiers>
+            <subResourceAccess>
+                <subResourceURL type="HTML" description="" name="Minnesota Groundwater Contamination Atlas Home">https://www.pca.state.mn.us/data/minnesota-groundwater-contamination-atlas</subResourceURL>
+                <subResourceURL type="HTML" description="" name="What&apos;s in My Neighborhood Application">https://webapp.pca.state.mn.us/cleanup/search</subResourceURL>
+            </subResourceAccess>
+		</dataSubResource>
+		<dataSubResource>
+            <subResourceType>fgdb</subResourceType>
+            <subResourceIdentifiers>
+                <subResourceGUID>{2ef470a7-378f-4896-8cd9-767326d20a55}</subResourceGUID>
+            </subResourceIdentifiers>
+            <subResourceAccess>
+            </subResourceAccess>
+        </dataSubResource>
+        <dataSubResource>
+            <subResourceType>preview</subResourceType>
+            <subResourceDescription>A JPEG for viewing the data.</subResourceDescription>
+            <subResourceIdentifiers>
+                <subResourceGUID>{b6cbb650-2fd1-4519-b3a2-6f13a0f13c7e}</subResourceGUID>
+            </subResourceIdentifiers>
+            <subResourceAccess>
+                <subResourceURL type="jpeg preview" description="This snapshot preview in jpeg format allows you to see the data as it might be used in your GIS." name="">ftp://gdrs.dnr.state.mn.us/gdrs/data/pub/us_mn_state_pca/env_mn_gw_contamination_atlas/preview/preview.jpg</subResourceURL>
+            </subResourceAccess>
+        </dataSubResource>
+        <dataSubResource>
+            <subResourceType>ags_mapserver</subResourceType>
+            <subResourceIdentifiers>
+                <subResourceGUID>{0dde9b05-47f6-46d0-8098-be6be909939f}</subResourceGUID>
+            </subResourceIdentifiers>
+            <subResourceAccess>
+                <subResourceURL type="ServiceDescription" description="" name="">https://pca-gis02.pca.state.mn.us/arcgis/rest/services/WIMN/cleanup/MapServer</subResourceURL>
+            </subResourceAccess>
+        </dataSubResource>
+    </dataSubResources>
+</dataResource>

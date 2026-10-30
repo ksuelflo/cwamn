@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Water Contamination in Minnesota | Clean Water Action</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="map.css" rel="stylesheet">
+    <link href="header.css" rel="stylesheet">
+
+    <!-- Runs before the page is drawn: marks which tab the URL asks for, so CSS can show that
+         tab from the first frame (no flash of the map tab on reload). nav.js removes the mark
+         once the tabs are switched for real. -->
+    <script>
+        (function () {
+            var p = new URLSearchParams(window.location.search);
+            var tab = p.get("tab") || (p.get("area") ? "explore" : null);
+            if (tab === "explore" || tab === "data") document.documentElement.setAttribute("data-start-tab", tab);
+        })();
+    </script>
+
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+    <script defer src="map.js"></script>
+    <script defer src="tabs.js"></script>
+    <script defer src="nav.js"></script>
+    <script defer src="welcome.js"></script>
+    <script defer src="explainer.js"></script>
+    <script defer src="docs.js"></script>
+    <script defer src="explore.js"></script>
+</head>
+<body>
+
+    <!-- ===== Site header ===== -->
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="site-logo" href="https://cleanwater.org/states/minnesota">
+                <!-- Save the Clean Water Action logo as images/cwa-logo.png -->
+                <img src="images/cwa-logo.png" alt="Clean Water Action">
+            </a>
+
+            <!-- Three-bar menu button (narrow screens only; nav.js opens/closes the tabs) -->
+            <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Menu"
+                    aria-expanded="false" aria-controls="site-tabs">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="site-tabs" id="site-tabs" role="tablist" aria-label="Sections">
+                <button class="site-tab is-active" role="tab" id="tab-map"
+                        aria-selected="true" aria-controls="panel-map">
+                    Water Contamination Map
+                </button>
+                <button class="site-tab" role="tab" id="tab-near-you"
+                        aria-selected="false" aria-controls="panel-near-you" tabindex="-1">
+                    Explore Contamination Near You
+                </button>
+                <button class="site-tab" role="tab" id="tab-data"
+                        aria-selected="false" aria-controls="panel-data" tabindex="-1">
+                    Data &amp; Methodology
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- ===== Tab 1: the map ===== -->
+        <section class="tab-panel" id="panel-map" role="tabpanel" aria-labelledby="tab-map">
+            <div id="map-wrap">
+                <!-- Toolbar above the map: boundary dropdown; map.js adds the data-layer toggle after it -->
+                <div class="map-toolbar">
+                    <label class="boundary-picker">
+                        <span>Boundaries:</span>
+                        <select id="boundary-select">
+                            <option value="counties" selected>Counties</option>
+                            <option value="watersheds">Watersheds</option>
+                            <option value="legislative">Legislative districts</option>
+                            <option value="congressional">Congressional districts</option>
+                        </select>
+                    </label>
+                </div>
+                <svg id="map"></svg>
+                <div class="controls">
+                    <!-- Re-opens the welcome / how-to box -->
+                    <button id="welcome-open" class="controls-info" title="How to use this map"
+                            aria-label="How to use this map" aria-haspopup="dialog">
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="11" x2="12" y2="17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                            <circle cx="12" cy="7.5" r="1.3" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button id="zoom-in" title="Zoom in">+</button>
+                    <button id="zoom-out" title="Zoom out">−</button>
+                    <button id="zoom-reset" title="Reset view">⟲</button>
+                </div>
+                <div class="tooltip" id="tooltip"></div>
+                <!-- map.js adds the legend + filters sidebar here -->
+
+                <!-- Right column: explainer, key numbers, charts (placeholders) -->
+                <aside class="right-panels" aria-label="About the selected data">
+                    <section class="panel panel--explainer" id="panel-explainer">
+                        <h2 class="panel-title">About this layer</h2>
+
+                        <!-- Each layer: a short preview (shown in the panel) and the full text
+                             (shown in the popup when "Read more" is clicked; explainer.js adds the button).
+                             The full text can have any number of <p>, <ul>, links, etc. -->
+                        <div class="explainer-text" data-layer="nitrate">
+                            <p class="explainer-preview">Nitrate preview: the first couple of sentences.</p>
+                            <div class="explainer-full" hidden>
+                                <p>Full nitrate text goes here.</p>
+                            </div>
+                        </div>
+
+                        <div class="explainer-text" data-layer="pfas" hidden>
+                            <p class="explainer-preview">PFAS preview: the first couple of sentences.</p>
+                            <div class="explainer-full" hidden>
+                                <p>Full PFAS text goes here.</p>
+                            </div>
+                        </div>
+
+                        <div class="explainer-text" data-layer="waterbodies" hidden>
+                            <p class="explainer-preview">Impaired waterbodies preview: the first couple of sentences.</p>
+                            <div class="explainer-full" hidden>
+                                <p>Full impaired waterbodies text goes here.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="panel-row">
+                        <section class="panel panel--stat" id="panel-stat-1">
+                            <div class="stat-value">—</div>
+                            <div class="stat-label">Key number 1</div>
+                        </section>
+                        <section class="panel panel--stat" id="panel-stat-2">
+                            <div class="stat-value">—</div>
+                            <div class="stat-label">Key number 2</div>
+                        </section>
+                    </div>
+
+                    <!-- One chart panel with two tabs; map.js sets the tab labels per layer -->
+                    <section class="panel panel--chart panel--charts" id="panel-charts">
+                        <div class="chart-tabs" role="tablist" aria-label="Charts">
+                            <button type="button" class="chart-tab is-active" role="tab" id="chart-tab-1"
+                                    aria-selected="true" aria-controls="panel-chart-1">Selected site</button>
+                            <button type="button" class="chart-tab" role="tab" id="chart-tab-2"
+                                    aria-selected="false" aria-controls="panel-chart-2" tabindex="-1">Long-term trend</button>
+                        </div>
+
+                        <div class="chart-view" id="panel-chart-1" role="tabpanel" aria-labelledby="chart-tab-1"></div>
+
+                        <!-- Long-term regional nitrate trend goes here (not built yet) -->
+                        <div class="chart-view" id="panel-chart-2" role="tabpanel" aria-labelledby="chart-tab-2" hidden></div>
+                    </section>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ===== Tab 2: Explore Contamination Near You ===== -->
+        <section class="tab-panel" id="panel-near-you" role="tabpanel" aria-labelledby="tab-near-you" hidden>
+            <!-- explore.js adds .has-result once something is selected: the search moves
+                 to the top-left and the numbers, map and districts appear -->
+            <div class="explore" id="explore">
+
+                <!-- ===== Search ===== -->
+                <div class="explore-search">
+                    <div class="explore-intro">
+                        <h1 class="explore-title">Explore contamination near you</h1>
+                        <p class="explore-instructions">Enter a Minnesota address, or search for a county, watershed or legislative district.</p>
+                    </div>
+
+                    <div class="explore-modes" role="tablist" aria-label="Search by">
+                        <button type="button" class="explore-mode is-active" role="tab" id="mode-address"
+                                aria-selected="true" aria-controls="search-address">Address</button>
+                        <button type="button" class="explore-mode" role="tab" id="mode-area"
+                                aria-selected="false" aria-controls="search-area" tabindex="-1">County or district</button>
+                    </div>
+
+                    <!-- Address: looked up with the U.S. Census geocoder -->
+                    <form class="explore-form" id="search-address" role="tabpanel" aria-labelledby="mode-address" novalidate>
+                        <label class="explore-field explore-field--street">
+                            <span>Street address</span>
+                            <input type="text" name="street" autocomplete="address-line1" placeholder="e.g. 520 Lafayette Rd N" required>
+                        </label>
+                        <div class="explore-field-row">
+                            <label class="explore-field">
+                                <span>City</span>
+                                <input type="text" name="city" autocomplete="address-level2" placeholder="e.g. Saint Paul">
+                            </label>
+                            <label class="explore-field explore-field--zip">
+                                <span>ZIP code</span>
+                                <input type="text" name="zip" autocomplete="postal-code" inputmode="numeric" maxlength="5" placeholder="55155">
+                            </label>
+                        </div>
+                        <button type="submit" class="explore-submit">Search</button>
+                        <p class="explore-status" id="address-status" role="status" aria-live="polite"></p>
+                        <ul class="explore-matches" id="address-matches" hidden></ul>
+                        <p class="explore-privacy">Addresses are looked up with the U.S. Census Bureau's geocoder and aren't stored by this site.</p>
+                    </form>
+
+                    <!-- County / watershed / district: suggestions as you type -->
+                    <div class="explore-area" id="search-area" role="tabpanel" aria-labelledby="mode-area" hidden>
+                        <label class="explore-field">
+                            <span>County, watershed or district</span>
+                            <input type="text" id="area-input" role="combobox" aria-autocomplete="list"
+                                   aria-expanded="false" aria-controls="area-suggestions" autocomplete="off"
+                                   placeholder="e.g. Hennepin, House District 64A, Cannon River">
+                        </label>
+                        <ul class="explore-suggestions" id="area-suggestions" role="listbox" hidden></ul>
+                    </div>
+                </div>
+
+                <!-- ===== Results (hidden until something is selected) ===== -->
+                <div class="explore-kpis" id="explore-kpis" aria-live="polite">
+                    <div class="explore-radius" id="explore-radius" role="group" aria-label="Search radius">
+                        <span>Within</span>
+                        <button type="button" data-miles="5">5 mi</button>
+                        <button type="button" data-miles="10" class="is-active">10 mi</button>
+                        <button type="button" data-miles="25">25 mi</button>
+                    </div>
+                    <section class="panel explore-kpi" id="kpi-nitrate"></section>
+                    <section class="panel explore-kpi" id="kpi-waters"></section>
+                    <section class="panel explore-kpi" id="kpi-pfas"></section>
+                    <section class="panel explore-kpi" id="kpi-wells"></section>
+                </div>
+
+                <div class="explore-map-wrap panel">
+                    <h2 class="panel-title explore-place" id="explore-place"></h2>
+                    <div class="explore-map-box">
+                        <!-- Private wells are drawn here, behind the SVG map (explore.js) -->
+                        <canvas id="explore-wells" aria-hidden="true"></canvas>
+                        <svg id="explore-map" role="img" aria-label="Map of the selected area"></svg>
+                        <div class="tooltip explore-tooltip" id="explore-tooltip"></div>
+                    </div>
+                    <div class="explore-legend" id="explore-legend"></div>
+                </div>
+
+                <aside class="explore-districts panel" id="explore-districts" aria-label="Districts and representatives"></aside>
+            </div>
+        </section>
+
+        <!-- ===== Tab 3: Data & Methodology ===== -->
+        <section class="tab-panel" id="panel-data" role="tabpanel" aria-labelledby="tab-data" hidden>
+            <div class="docs-layout">
+                <article class="docs-article">
+                    <h1 class="docs-title">Data &amp; Methodology</h1>
+                    <p class="docs-meta">Data last updated: <span class="data-updated">October 19th, 2026</span></p>
+                    <p class="docs-intro">
+                        This page explains where the data on the map comes from, how we cleaned it, and what it can and
+                        can't tell you. Each data layer has its own section below, including the limits you should keep
+                        in mind when reading the map and charts.
+                    </p>
+
+                    <!-- Each section's id is what the "On this page" links jump to -->
+                    <section class="docs-section" id="sec-data-sources">
+                        <h2>Data sources</h2>
+
+                        <h3>Data layers</h3>
+                        <dl class="docs-sources">
+                            <div>
+                                <dt>Nitrate</dt>
+                                <dd>
+                                    <a href="https://www.waterqualitydata.us/wqp_description/" target="_blank" rel="noopener">Water Quality Portal</a>
+                                    (U.S. Geological Survey and U.S. Environmental Protection Agency). The portal combines USGS and EPA
+                                    data services into the most comprehensive water-sample dataset available. The samples are collected
+                                    by many individual organizations, which submit their results to EPA and USGS.
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>PFAS</dt>
+                                <dd>
+                                    <a href="https://experience.arcgis.com/experience/5b59ca10ccec4e04bb3eafc091b53573/page/EPA-Standards" target="_blank" rel="noopener">Minnesota Department of Health (MDH)</a>.
+                                    MDH's latest results for PFAS in Minnesota's community water systems.
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Impaired waterbodies</dt>
+                                <dd>
+                                    <a href="https://gis.data.mn.gov/maps/9d62ddd9d50c45cbb727648a246c0f7b/about" target="_blank" rel="noopener">Minnesota Pollution Control Agency (MPCA)</a>.
+                                    Minnesota's draft 2026 list of impaired waters.
+                                </dd>
+                            </div>
+                        </dl>
+
+                        <h3>Map boundaries</h3>
+                        <dl class="docs-sources">
+                            <div>
+                                <dt>Watersheds</dt>
+                                <dd>
+                                    <a href="https://www.usgs.gov/national-hydrography/watershed-boundary-dataset" target="_blank" rel="noopener">USGS Watershed Boundary Dataset</a>.
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Counties, congressional districts, and state House and Senate districts</dt>
+                                <dd>
+                                    <a href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html" target="_blank" rel="noopener">U.S. Census Bureau TIGER/Line files</a>,
+                                    downloaded with the <code>tigris</code> package in R.
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
+
+                    <section class="docs-section" id="sec-nitrate">
+                        <h2>Nitrate</h2>
+
+                        <h3>What's on the map</h3>
+                        <p>
+                            The map shows nitrate samples taken from 2020 through the latest update of this website.
+                        </p>
+                        <p>
+                            We compare results to EPA's drinking water limit for nitrate, <strong>10 mg/L</strong>. Water
+                            above this level is considered unsafe to drink. Many of the streams and rivers sampled aren't
+                            used for drinking water, so a high reading means the water would be unsafe <em>if</em> it were
+                            used for drinking.
+                        </p>
+
+                        <h3>How we cleaned the data</h3>
+                        <ul>
+                            <li>We removed samples reported as quality control.</li>
+                            <li>We removed results reported as "Detected, Not Quantified" or "Not Reported," since they have no usable value.</li>
+                            <li>We standardized units and the ways different organizations report detection results.</li>
+                        </ul>
+
+                        <h3>Long-term nitrate trend chart (2005–2025)</h3>
+                        <p>
+                            Finding the long-term trend of nitrate in different regions of Minnesota is difficult, and
+                            any method has flaws. The chart shows the best version of the trend we could produce with
+                            the data available. Keep these limits in mind:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Which sites are sampled changes every year.</strong> Not every site is sampled
+                                every year, so the pool of sites behind each year's value shifts. This can bias the results.
+                            </li>
+                            <li>
+                                <strong>It doesn't represent all of Minnesota's water.</strong> The data comes from
+                                long-term monitoring sites, which weren't chosen at random.
+                            </li>
+                            <li>
+                                <strong>Weather affects the readings.</strong> Wet years wash more nitrate off farm
+                                fields and into streams, and dry years do the opposite.
+                            </li>
+                        </ul>
+
+                        <p>How we calculated the trend:</p>
+                        <ol>
+                            <li>
+                                We used every sample from 2005–2025 taken at "long-term sites": sites with at least one
+                                sample in every year from 2020 to 2025.
+                            </li>
+                            <li>For each site, we took the median of its nitrate readings within each month.</li>
+                            <li>For each site and year, we took the median of those monthly values.</li>
+                            <li>For each region and year, we took the median across all of its sites. This is the value plotted.</li>
+                        </ol>
+                        <p>
+                            We compared several other ways of calculating the trend. This one gave the best balance of
+                            being easy to explain and holding up against outliers.
+                        </p>
+
+                        <p class="docs-callout">
+                            Because of these challenges, read the chart for the general direction of change, not for
+                            specific increases or decreases from one year to the next.
+                        </p>
+                    </section>
+
+                    <section class="docs-section" id="sec-pfas">
+                        <h2>PFAS</h2>
+
+                        <h3>How water systems are categorized</h3>
+                        <p>
+                            Each community water system is placed in a category based on its <strong>highest</strong>
+                            detected PFAS level, compared with EPA's drinking water limits. Water above a limit is
+                            considered unsafe to drink.
+                        </p>
+                        <table class="docs-table docs-table--compact">
+                            <thead>
+                                <tr><th scope="col">PFAS compound</th><th scope="col">EPA limit</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>PFOA</td><td>4 ng/L (parts per trillion)</td></tr>
+                                <tr><td>PFOS</td><td>4 ng/L</td></tr>
+                                <tr><td>PFHxS</td><td>10 ng/L</td></tr>
+                                <tr><td>PFNA</td><td>10 ng/L</td></tr>
+                                <tr><td>HFPO-DA (GenX)</td><td>10 ng/L</td></tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            Every system labeled <strong>Above limit</strong> comes directly from MDH's own categorization.
+                        </p>
+                        <p>
+                            These are the limits EPA finalized in 2024. In May 2026, EPA proposed rescinding the limits
+                            for PFHxS, PFNA and HFPO-DA while keeping the PFOA and PFOS limits. As of this page's last
+                            update, that proposal is not final.
+                        </p>
+
+                        <h3>Other notes</h3>
+                        <ul>
+                            <li>
+                                MDH updates its data regularly. The map reflects MDH's data as of our latest refresh
+                                (the date at the top of this page).
+                            </li>
+                            <li>
+                                Some systems buy their water from another system. They're marked "Purchased" under
+                                Water Source and shown with the results of the system they buy from.
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section class="docs-section" id="sec-waterbodies">
+                        <h2>Impaired waterbodies</h2>
+                        <p>
+                            This layer shows Minnesota's impaired waters for the 2026 reporting cycle. Every state is
+                            required to report its impaired waters under the federal Clean Water Act. We use the
+                            <strong>draft</strong> 2026 list, which Minnesota submitted to EPA on September 28. EPA has
+                            not yet approved it, so some listings may change.
+                            <a href="https://www.pca.state.mn.us/air-water-land-climate/minnesotas-impaired-waters-list" target="_blank" rel="noopener">Learn more about this process from MPCA</a>.
+                        </p>
+
+                        <h3>What "impaired" means</h3>
+                        <ul>
+                            <li>
+                                <strong>It's pass/fail.</strong> A water is listed when it fails the state standard for
+                                a contaminant. The data doesn't show by how much it failed.
+                            </li>
+                            <li>
+                                <strong>Not on the map doesn't mean clean.</strong> Many smaller waters haven't been
+                                assessed yet. Waters that have been assessed weren't necessarily tested for every contaminant.
+                            </li>
+                            <li>
+                                <strong>A cleanup plan isn't a cleanup.</strong> On the map, waters are drawn
+                                <strong>bold</strong> if at least one of the problems you've selected still needs a
+                                cleanup plan, and <span class="faded-sample">faded</span> if every selected problem has
+                                an approved plan. The counts and charts follow the same rule. An approved
+                                plan doesn't mean the water has improved yet.
+                            </li>
+                        </ul>
+
+                        <h3>What gets tested</h3>
+                        <ul>
+                            <li>
+                                <strong>Testing depends on how a water is used.</strong> Each waterbody is assessed against
+                                the standards for its designated uses, such as aquatic life, swimming, eating fish, or
+                                drinking water. A contaminant is only assessed where a standard for one of those uses
+                                applies. For full detail, see
+                                <a href="https://www.pca.state.mn.us/sites/default/files/wq-iw1-04n.pdf" target="_blank" rel="noopener">MPCA's assessment guidance (PDF)</a>.
+                            </li>
+                            <li>
+                                <strong>Nitrate is an example.</strong> Minnesota's nitrate standard protects drinking
+                                water, so it only applies to waters designated for drinking. Many farm-country streams
+                                with high nitrate can't be listed as nitrate-impaired. This is why the Nitrate layer and
+                                this layer can tell different stories.
+                            </li>
+                            <li>
+                                <strong>Mercury, PCBs and PFOS in fish</strong> mean the fish aren't safe to eat in
+                                unlimited amounts. They don't mean the water is unsafe to swim in or drink. Most mercury
+                                reaches Minnesota's lakes through air pollution, which is why it's so widespread.
+                            </li>
+                            <li>
+                                <strong>Unhealthy fish and aquatic insect communities</strong> show that a stream's
+                                ecosystem is damaged, but not what caused it.
+                            </li>
+                            <li>
+                                <strong>Many contaminants aren't on the list at all.</strong> A contaminant can only be
+                                listed if Minnesota has a surface water standard for it. PFOS is the only PFAS compound
+                                assessed, and most pesticides have no standard.
+                            </li>
+                        </ul>
+
+                        <h3>How we show the data</h3>
+                        <ul>
+                            <li>
+                                MPCA splits longer rivers into sections, so you may see one river drawn in several
+                                different colors.
+                            </li>
+                            <li>
+                                Waterbodies often cross county and district lines. We assign each one to only
+                                <strong>one</strong> county, watershed or district, based on a point inside it, so no
+                                waterbody is counted twice.
+                            </li>
+                            <li>
+                                We grouped contaminants into eight categories. When a water has problems in more than one
+                                category, the map colors it by its highest-ranked category, using the order below. If you
+                                turn categories off in the filters, the water takes the color of its highest-ranked
+                                category that's still on.
+                            </li>
+                        </ul>
+
+                        <table class="docs-table docs-table--groups">
+                            <caption>Problem categories, highest ranked first</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="num">Rank</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Contaminants</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="--swatch: #CC79A7">
+                                    <td class="num">1</td>
+                                    <th scope="row"><span class="swatch"></span>PFAS</th>
+                                    <td>PFOS in fish tissue, PFOS in water</td>
+                                </tr>
+                                <tr style="--swatch: #D55E00">
+                                    <td class="num">2</td>
+                                    <th scope="row"><span class="swatch"></span>Other toxic chemicals</th>
+                                    <td>PCBs in fish tissue, PCBs in water, dioxin, DDT, dieldrin, toxaphene, acetochlor (herbicide), chlorpyrifos (insecticide)</td>
+                                </tr>
+                                <tr style="--swatch: #F0E442">
+                                    <td class="num">3</td>
+                                    <th scope="row"><span class="swatch"></span>Mercury</th>
+                                    <td>Mercury in fish tissue, mercury in water</td>
+                                </tr>
+                                <tr style="--swatch: #009E73">
+                                    <td class="num">4</td>
+                                    <th scope="row"><span class="swatch"></span>Nutrients &amp; low oxygen</th>
+                                    <td>Nutrients (phosphorus), nitrate, ammonia, low dissolved oxygen</td>
+                                </tr>
+                                <tr style="--swatch: #E69F00">
+                                    <td class="num">5</td>
+                                    <th scope="row"><span class="swatch"></span>Bacteria</th>
+                                    <td><i>E. coli</i>, fecal coliform</td>
+                                </tr>
+                                <tr style="--swatch: #0072B2">
+                                    <td class="num">6</td>
+                                    <th scope="row"><span class="swatch"></span>Salts &amp; metals</th>
+                                    <td>Chloride (salt), sulfate, aluminum, arsenic, copper</td>
+                                </tr>
+                                <tr style="--swatch: #000000">
+                                    <td class="num">7</td>
+                                    <th scope="row"><span class="swatch"></span>Sediment</th>
+                                    <td>Suspended sediment, turbidity</td>
+                                </tr>
+                                <tr style="--swatch: #56B4E9">
+                                    <td class="num">8</td>
+                                    <th scope="row"><span class="swatch"></span>Aquatic life &amp; habitat</th>
+                                    <td>Unhealthy fish community, unhealthy aquatic insect community, coldwater habitat, temperature, pH</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </article>
+
+                <!-- Right-side table of contents; docs.js highlights the section you're reading -->
+                <nav class="docs-toc" aria-label="On this page">
+                    <p class="docs-toc__title">On this page</p>
+                    <ul>
+                        <li><a href="#sec-data-sources">Data sources</a></li>
+                        <li><a href="#sec-nitrate">Nitrate</a></li>
+                        <li><a href="#sec-pfas">PFAS</a></li>
+                        <li><a href="#sec-waterbodies">Impaired waterbodies</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== Welcome / how-to box =====
+         Opens on load unless the visitor checked "Don't show this again".
+         The (i) button above the zoom controls re-opens it any time. -->
+    <dialog class="welcome" id="welcome" aria-labelledby="welcome-title" tabindex="-1">
+        <div class="welcome__head">
+            <h2 class="welcome__title" id="welcome-title">Water Contamination in Minnesota</h2>
+            <button type="button" class="welcome__close" id="welcome-close" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="welcome__body">
+            <!-- TODO: what this site is and Clean Water Action's role -->
+            <p class="docs-meta">Data last updated: <span class="data-updated">October 19th, 2026</span></p>
+            <p >These maps display Minnesota's impaired waterbodies, with specific overlays for nitrate, PFAS, and general contamination. 
+                This is meant to serve both as a reference for you to learn about what is impairing the waterbodies near you, and to connect you to resources to take action and implement mitigation steps for your water. </p>
+
+            <h3>How to use the map</h3>
+            <ul class="welcome-list">
+                <li>
+                    <strong>Left:</strong> the legend and filters. They change with the data layer you pick
+                    (nitrate, PFAS, or impaired waterbodies).
+                </li>
+                <li>
+                    <strong>Middle:</strong> the Minnesota map. What it shows depends on the layer and filters you choose.
+                </li>
+                <li>
+                    <strong>Right:</strong> charts and key numbers for the selected layer.
+                </li>
+            </ul>
+
+            <h3>Changing what's on the map</h3>
+            <ul class="welcome-list">
+                <li>
+                    <strong>Boundaries</strong> (dropdown above the map): view the map by county, watershed,
+                    legislative district or congressional district.
+                </li>
+                <li>
+                    <strong>Data layer</strong> (toggle beside it): switch between nitrate, PFAS and impaired waterbodies.
+                </li>
+                <li>
+                    <strong>Zoom and pan</strong> with your mouse, or with the buttons in the map's top-right corner.
+                </li>
+                <li>
+                    <strong>Hover or click</strong> on the data for details. Clicking a county, watershed or
+                    district zooms the map to that place.
+                </li>
+            </ul>
+
+            <h3>Charts and key numbers</h3>
+            <p>
+                Each chart and key number says how to interact with it. Some update with the filters and some don't.
+                They're all specific to the data layer you've selected.
+            </p>
+
+            <p class="welcome-more">
+                Reopen this guide any time with the <span class="welcome-i" aria-label="info">i</span> button
+                above the zoom controls. For sources and caveats, see
+                <a href="#panel-data" id="welcome-to-docs">Data &amp; Methodology</a>.
+            </p>
+        </div>
+
+        <div class="welcome__foot">
+            <label class="welcome__remember">
+                <input type="checkbox" id="welcome-hide">
+                Don't show this again
+            </label>
+        </div>
+    </dialog>
+
+    <!-- ===== "About this layer" full text (filled in by explainer.js) ===== -->
+    <dialog class="welcome explainer-dialog" id="explainer-dialog" aria-labelledby="explainer-dialog-title" tabindex="-1">
+        <div class="welcome__head">
+            <h2 class="welcome__title" id="explainer-dialog-title">About this layer</h2>
+            <button type="button" class="welcome__close" id="explainer-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="welcome__body explainer-dialog__body" id="explainer-dialog-body"></div>
+    </dialog>
+
+</body>
+</html>

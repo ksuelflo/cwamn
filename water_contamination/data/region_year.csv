@@ -1,0 +1,106 @@
+region,year,year_med,n_sites
+Minnesota River & Southwest,2005,3.4675,52
+Minnesota River & Southwest,2006,6.6225000000000005,68
+Minnesota River & Southwest,2007,3.94,75
+Minnesota River & Southwest,2008,3.94,73
+Minnesota River & Southwest,2009,1.75,81
+Minnesota River & Southwest,2010,5,81
+Minnesota River & Southwest,2011,5.33375,80
+Minnesota River & Southwest,2012,0.6525000000000001,80
+Minnesota River & Southwest,2013,3.12,93
+Minnesota River & Southwest,2014,2.6275,102
+Minnesota River & Southwest,2015,2.053125,102
+Minnesota River & Southwest,2016,8.3775,107
+Minnesota River & Southwest,2017,6.455,116
+Minnesota River & Southwest,2018,5.13,103
+Minnesota River & Southwest,2019,4.692500000000001,109
+Minnesota River & Southwest,2020,2.895,122
+Minnesota River & Southwest,2021,1.29,123
+Minnesota River & Southwest,2022,2.525,123
+Minnesota River & Southwest,2023,1.6549999999999998,123
+Minnesota River & Southwest,2024,4.515000000000001,123
+Minnesota River & Southwest,2025,4.515000000000001,123
+North (Superior & Rainy),2005,0.05,3
+North (Superior & Rainy),2006,0.04,2
+North (Superior & Rainy),2007,0.05500000000000001,5
+North (Superior & Rainy),2008,0.05,13
+North (Superior & Rainy),2009,0.05,13
+North (Superior & Rainy),2010,0.05,13
+North (Superior & Rainy),2011,0.05,13
+North (Superior & Rainy),2012,0.0335,21
+North (Superior & Rainy),2013,0.05,24
+North (Superior & Rainy),2014,0.060000000000000005,30
+North (Superior & Rainy),2015,0.04275,32
+North (Superior & Rainy),2016,0.05,32
+North (Superior & Rainy),2017,0.05675,32
+North (Superior & Rainy),2018,0.06175,32
+North (Superior & Rainy),2019,0.04875,32
+North (Superior & Rainy),2020,0.0465,32
+North (Superior & Rainy),2021,0.039999999999999994,32
+North (Superior & Rainy),2022,0.057499999999999996,32
+North (Superior & Rainy),2023,0.05,32
+North (Superior & Rainy),2024,0.059500000000000004,32
+North (Superior & Rainy),2025,0.05,32
+Red River,2005,0.07624999999999998,62
+Red River,2006,0.02,66
+Red River,2007,0.035,67
+Red River,2008,0.06,89
+Red River,2009,0.03,105
+Red River,2010,0.0325,98
+Red River,2011,0.05,105
+Red River,2012,0.03,108
+Red River,2013,0.07,121
+Red River,2014,0.08399999999999999,134
+Red River,2015,0.046,130
+Red River,2016,0.082,149
+Red River,2017,0.05,153
+Red River,2018,0.0685,156
+Red River,2019,0.1115,157
+Red River,2020,0.079,167
+Red River,2021,0.03,170
+Red River,2022,0.14,166
+Red River,2023,0.05,165
+Red River,2024,0.08,164
+Red River,2025,0.06125,170
+Southeast,2005,2.5355,30
+Southeast,2006,4.1985,43
+Southeast,2007,4.15,53
+Southeast,2008,3.93525,72
+Southeast,2009,3.71,73
+Southeast,2010,4.83,81
+Southeast,2011,4.48,72
+Southeast,2012,3.36,71
+Southeast,2013,4.965,87
+Southeast,2014,4.6125,90
+Southeast,2015,4.54,87
+Southeast,2016,6.234999999999999,93
+Southeast,2017,5.4175,102
+Southeast,2018,5.4975000000000005,96
+Southeast,2019,5.62,122
+Southeast,2020,5.20875,126
+Southeast,2021,4.33,127
+Southeast,2022,5.5975,128
+Southeast,2023,4.345000000000001,127
+Southeast,2024,6.1850000000000005,128
+Southeast,2025,6.375,128
+Upper Mississippi & St. Croix,2005,0.06,91
+Upper Mississippi & St. Croix,2006,0.11499999999999999,99
+Upper Mississippi & St. Croix,2007,0.16775,110
+Upper Mississippi & St. Croix,2008,0.1975,123
+Upper Mississippi & St. Croix,2009,0.0775,120
+Upper Mississippi & St. Croix,2010,0.19,125
+Upper Mississippi & St. Croix,2011,0.14350000000000002,135
+Upper Mississippi & St. Croix,2012,0.27249999999999996,135
+Upper Mississippi & St. Croix,2013,0.29000000000000004,156
+Upper Mississippi & St. Croix,2014,0.317,167
+Upper Mississippi & St. Croix,2015,0.41625,182
+Upper Mississippi & St. Croix,2016,0.41000000000000003,202
+Upper Mississippi & St. Croix,2017,0.69,162
+Upper Mississippi & St. Croix,2018,0.50875,186
+Upper Mississippi & St. Croix,2019,0.22625,220
+Upper Mississippi & St. Croix,2020,0.34199999999999997,232
+Upper Mississippi & St. Croix,2021,0.24675000000000002,234
+Upper Mississippi & St. Croix,2022,0.41374999999999995,228
+Upper Mississippi & St. Croix,2023,0.24,229
+Upper Mississippi & St. Croix,2024,0.2525,235
+Upper Mississippi & St. Croix,2025,0.315,228

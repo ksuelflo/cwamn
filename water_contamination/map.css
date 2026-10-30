@@ -1,0 +1,144 @@
+/* ==========================================================================
+   map.css: how the map and its controls LOOK.
+   Page layout (columns, positions, sizes) lives in header.css.
+   ========================================================================== */
+
+:root {
+    --bg: #f6f5f1;
+    --land: #ffffff;
+    --county-line: #cfccc3;
+    --state-line: #4f4c45;
+    --hover: #e6eff3;
+    --ink: #222;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+}
+
+/* ---- Map ---- */
+
+#map {
+    display: block;
+    cursor: grab;
+    touch-action: none;
+}
+#map:active { cursor: grabbing; }
+
+/* vector-effect keeps line widths constant at every zoom level */
+.county {
+    fill: var(--land);
+    stroke: var(--county-line);
+    stroke-width: 0.6;
+    vector-effect: non-scaling-stroke;
+}
+.watershed {
+    fill: var(--land);
+    stroke: #9fb7c4;
+    stroke-width: 0.8;
+    vector-effect: non-scaling-stroke;
+}
+.county:hover,
+.watershed:hover { fill: var(--hover); }
+.boundary.active { fill: #d9e8ef; }
+
+.state-outline {
+    fill: none;
+    stroke: var(--state-line);
+    stroke-width: 1.4;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
+/* ---- Zoom buttons ---- */
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.controls button {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+    line-height: 1;
+    border: 1px solid #bbb;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.controls button:hover { background: #f0f0f0; }
+
+/* ---- Tooltip ---- */
+
+.tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    max-width: 260px;
+    opacity: 0;
+    transition: opacity 0.1s;
+    z-index: 10;
+}
+
+/* ---- Toggles (counties/watersheds and data layer) ---- */
+
+.boundary-toggle,
+.layer-toggle {
+    display: flex;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+}
+.boundary-toggle button,
+.layer-toggle button {
+    border: none;
+    background: #fff;
+    padding: 7px 14px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.boundary-toggle button + button,
+.layer-toggle button + button { border-left: 1px solid #bbb; }
+.boundary-toggle button:hover,
+.layer-toggle button:hover { background: #f0f0f0; }
+.boundary-toggle button.selected { background: #2b7bb9; color: #fff; }
+.layer-toggle button.selected { background: #222; color: #fff; }
+
+/* ---- Legend ---- */
+
+.legend {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 12px;
+}
+.legend-heading {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--cwa-teal);
+    margin-bottom: 6px;
+}
+.legend-title { font-weight: 600; margin-bottom: 4px; }
+.legend-row { display: flex; align-items: center; gap: 6px; margin: 2px 0; }
+.legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 0.5px solid #444;
+    flex: none;
+}
+.legend-swatch.hollow { background: none; border: 1.5px solid #b8860b; }
+.legend-note { margin-top: 6px; color: #666; font-size: 11px; line-height: 1.3; }

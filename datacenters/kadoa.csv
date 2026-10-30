@@ -1,0 +1,39 @@
+company,address,city,state,zipcode,normalized_status,company_type,total_permit_value,permit_count,first_permit_date,last_permit_date,latitude,longitude
+,550 OPPERMAN DR,EAGAN,MN,,operational,,,1,,,44.827913538711,-93.110912122682
+,323 STINSON BLVD,MINNEAPOLIS,MN,,operational,enterprise,,1,,,44.992632179219,-93.227027414325
+,1275 GREY FOX RD,ARDEN HILLS,MN,,operational,,,1,,,45.053882821813,-93.154984605409
+,1180 CENTRE POINTE CIR,MENDOTA HEIGHTS,MN,,unknown,enterprise,,1,,,44.8603,-93.1513
+,1707 W CREEK LN,CHASKA,MN,,operational,enterprise,,1,,,44.806068133723,-93.634596736375
+,14701 BLAINE AVE BLDG 1,ROSEMOUNT,MN,55068    ,operational,hyperscale,,1,,,44.732662481654,-93.055034036613
+DataBank,3255 NEIL ARMSTRONG BLVD,EAGAN,MN,551212279,operational,carrier_neutral,,2,,,44.837519163599,-93.145331985724
+,1200 WASHINGTON AVE S STE 200,MINNEAPOLIS,MN,554151284,operational,,,1,,,44.974820936428,-93.251662231428
+,6300 OLSON MEMORIAL HWY,GOLDEN VALLEY,MN,55427    ,unknown,enterprise,,1,,,,
+,6150 TRENTON LN N MN013-N110,PLYMOUTH,MN,55442    ,operational,,,1,,,45.064055747359,-93.409418983001
+DataBank,8111 OXBOW CREEK N,BROOKLYN PARK,MN,55445    ,operational,carrier_neutral,,2,,,45.14438,-93.385913
+,601 2ND AVE S,HOPKINS,MN,553437779,operational,,,1,,,44.914384990046,-93.40303173995
+,13490 BASS LAKE RD,MAPLE GROVE,MN,553113634,operational,enterprise,,1,,,45.069579760002,-93.451460244591
+,14100 BUSINESS CENTER DR NW,ELK RIVER,MN,553304654,operational,enterprise,,1,,,45.305673688548,-93.621394565489
+Cologix,511 11th Ave S,Minneapolis,MN,55415,operational,carrier_neutral,,8,,,44.971408,-93.25458
+"Wikstrom Telephone Company, Inc.",232 20th St NW,East Grand Forks,MN,56721,operational,carrier_neutral,,1,,,47.945477,-97.022654
+"Neutral Path Communications, LLC",220 S Broadway,Rochester,MN,55901,operational,carrier_neutral,,2,,,44.020868,-92.462576
+First Properties,227 W 1st Street,Duluth,MN,55802,operational,carrier_neutral,,1,,,46.785022,-92.103083
+Implex,1229 NE 2nd St,Minneapolis,MN,55413,operational,carrier_neutral,,1,,,45.000634,-93.265888
+"DCI Technology Minneapolis, LLC",331 2nd Avenue South,Minneapolis,MN,55401,operational,carrier_neutral,,1,,,44.97859,-93.266407
+Flexential,3500 Lyman Blvd,Chaska,MN,55318,operational,carrier_neutral,,1,,,44.851292,-93.599549
+EdgeConneX,6875 Shady Oak Road,Eden Prairie,MN,55344,operational,carrier_neutral,,1,,,44.878844,-93.404156
+Centersquare,4450 Dean Lakes Blvd.,Shakopee,MN,55379,operational,carrier_neutral,,1,,,44.778828,-93.461982
+"Neutral Path Communications, LLC",713 Church St,Belle Plaine,MN,56011,operational,carrier_neutral,,1,,,44.624122,-93.778109
+Zayo Group,10300 6th Ave N,Minneapolis,MN,55441,operational,carrier_neutral,,1,,,44.98646,-93.411433
+US Internet,12450 Wayzata Blvd,Minnetonka,MN,55305,operational,carrier_neutral,,2,,,44.972011,-93.436607
+H5 Data Centers,"1125 Energy Park Drive, Suite 100",St. Paul,MN,55108,operational,carrier_neutral,,1,,,44.972309,-93.147411
+"Verus Corporation, Inc.",201 85th Avenue NW,Coon Rapids,MN,55433-6004,operational,carrier_neutral,,1,,,45.124986,-93.2728
+DataBank,7700 France Avenue South,Edina,MN,55435,operational,carrier_neutral,,1,,,44.862766,-93.330405
+Jaguar Communications,213 S. Oak,Owatonna,MN,55060,operational,carrier_neutral,,1,,,44.083125,-93.228236
+702 Communications,702 Main Ave,Moorhead,MN,56560,operational,carrier_neutral,,1,,,46.874078,-96.769171
+ark data centers,3401 Technology Drive,Duluth,MN,55811,operational,carrier_neutral,,1,,,46.827451,-92.130338
+South Front Networks,1202 W 9th St,Albert Lea,MN,56007,operational,carrier_neutral,,1,,,43.633435,-93.383825
+Stream Data Centers,1708 W Creek Ln,Chaska,MN,55318,operational,carrier_neutral,,1,,,44.808431,-93.636931
+T5 Data Centers,1001 3rd Ave South,Minneapolis,MN,55404,operational,carrier_neutral,,1,,,44.971526,-93.270339
+ark data centers,421 N 6th Ave East,Duluth,MN,55805-1966,operational,carrier_neutral,,1,,,46.795743,-92.096014
+OneNeck IT Solutions LLC,10290 W 70th St,Eden Prairie,MN,55344-3440,operational,carrier_neutral,,1,,,44.877094,-93.407686
+Atomic Data LLC,250 Marquette Ave,Minneapolis,MN,55401-2180,operational,carrier_neutral,,1,,,44.980944,-93.267514

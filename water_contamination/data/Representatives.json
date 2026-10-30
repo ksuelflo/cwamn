@@ -1,0 +1,17 @@
+{
+    "_about": "Representatives shown on the Explore page. Fill in after the January 2027 swearing-in; update after each election. Keys: MN House = district like \"64A\", MN Senate = number like \"64\", U.S. House = number like \"4\". 'url' and 'party' are optional.",
+    "updated": null,
+    "us_senate": [
+        { "name": "", "party": "", "url": "" },
+        { "name": "", "party": "", "url": "" }
+    ],
+    "us_house": {
+        "1": { "name": "", "party": "", "url": "" }
+    },
+    "mn_senate": {
+        "1": { "name": "", "party": "", "url": "" }
+    },
+    "mn_house": {
+        "1A": { "name": "", "party": "", "url": "" }
+    }
+}

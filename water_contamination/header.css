@@ -1,0 +1,1393 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700&display=swap");
+
+/* ==========================================================================
+   Page layout + site header (styled after cleanwater.org)
+   Sizes use rem (scales with the user's font size), fr/% (share available
+   width), and viewport units (fit the screen). Few fixed pixels.
+
+   The nav font and colors are close approximations. To match exactly,
+   inspect a nav link on cleanwater.org (right-click "Priorities" > Inspect >
+   Computed) and copy font-family, font-size, font-weight, and color here.
+   ========================================================================== */
+
+:root {
+    --cwa-nav-font: "Fira Sans", "Helvetica Neue", Arial, sans-serif;
+    --cwa-teal: #1f6f92;
+    --cwa-teal-hover: #154f69;
+    --cwa-green: #7ab648;
+
+    --page-gutter: clamp(1rem, 2vw, 2.5rem);   /* left/right page margin */
+    --gap: clamp(0.75rem, 1.2vw, 1.5rem);      /* space between columns and panels */
+
+    --header-height: 5.25rem;
+    /* Height kept free below the map section (nothing below it now, so none) */
+    --below-map-reserve: 0rem;
+}
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Header bar
+   ========================================================================== */
+
+.site-header {
+    background: #fff;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.site-header__inner {
+    padding: 0 var(--page-gutter);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.site-logo img {
+    display: block;
+    height: 3.1rem;
+    width: auto;
+}
+
+.site-tabs {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.site-tab {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0.4rem 0;
+    cursor: pointer;
+    font-family: var(--cwa-nav-font);
+    font-size: clamp(1rem, 1.4vw, 1.3rem);
+    font-weight: 700;
+    color: var(--cwa-teal);
+    border-bottom: 0.2rem solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+.site-tab:hover { color: var(--cwa-teal-hover); }
+.site-tab.is-active { border-bottom-color: var(--cwa-green); }
+.site-tab:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 4px; }
+
+/* Three-bar menu button: only shown on narrow screens (see the media query below) */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0 0.6rem;
+    background: none;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+.nav-toggle span {
+    display: block;
+    height: 2.5px;
+    border-radius: 2px;
+    background: var(--cwa-teal);
+    transition: transform 0.2s, opacity 0.2s;
+}
+.nav-toggle:hover { background: #f2f6f8; }
+.nav-toggle:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; }
+/* Open: the three bars turn into an X */
+.site-header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.site-header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+.site-header.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) { .nav-toggle span { transition: none; } }
+
+.tab-panel[hidden] { display: none; }
+
+/* Reloading on Explore or Data & Methodology: show that tab from the first frame,
+   before the scripts run (set by the small script in <head>, removed by nav.js) */
+html[data-start-tab] #tab-map { border-bottom-color: transparent; }
+html[data-start-tab] #panel-map { display: none; }
+html[data-start-tab="explore"] #tab-near-you,
+html[data-start-tab="data"] #tab-data { border-bottom-color: var(--cwa-green); }
+html[data-start-tab="explore"] #panel-near-you[hidden],
+html[data-start-tab="data"] #panel-data[hidden] { display: block; }
+
+.placeholder {
+    max-width: 50rem;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    font-family: var(--cwa-nav-font);
+    color: #333;
+}
+.placeholder h1 { color: var(--cwa-teal); }
+
+/* ==========================================================================
+   Map section: three columns that fill the screen
+     sidebar | toolbar | right
+     sidebar | map     | right
+   ========================================================================== */
+
+#map-wrap {
+    position: relative;               /* the tooltip is positioned against this */
+    display: grid;
+    grid-template-columns:
+        minmax(13rem, 17rem)          /* sidebar: legend + filters */
+        minmax(0, 1.5fr)              /* map: gets the most space */
+        minmax(18rem, 1fr);           /* right panels */
+    /* Row 1 sizes to the toggles; row 2 (the map) takes everything else.
+       Without this, tall side columns stretch the toggle row. */
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+        "sidebar toolbar right"
+        "sidebar map     right";
+    gap: 0.75rem var(--gap);
+    max-width: none;
+    margin: 0;
+    padding: 0.75rem var(--page-gutter);
+    /* The whole section fits on screen, leaving room for the bottom row */
+    height: calc(100dvh - var(--header-height) - var(--below-map-reserve));
+    min-height: 32rem;
+    box-sizing: border-box;
+}
+
+.map-toolbar {
+    grid-area: toolbar;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+#map {
+    grid-area: map;
+    width: 100%;
+    height: 100%;                     /* fills its cell; the viewBox keeps Minnesota's shape */
+    min-height: 0;
+}
+
+/* Zoom buttons share the map's cell, top-right corner */
+#map-wrap .controls {
+    grid-area: map;
+    position: static;
+    justify-self: end;
+    align-self: start;
+    margin: 0.5rem;
+    z-index: 2;
+}
+
+/* Boundary dropdown (Counties / Watersheds / Legislative / Congressional) */
+.boundary-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--cwa-nav-font);
+    font-size: 0.85rem;
+}
+.boundary-picker > span {
+    font-weight: 700;
+    color: #333;
+}
+/* Custom arrow so there's room to the right of it (the browser's own arrow sits on the edge) */
+.boundary-picker select {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    color: #222;
+    padding: 0.25rem 1.9rem 0.25rem 0.5rem;
+    border: 1px solid #bbb;
+    border-radius: 0.25rem;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23555' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.65rem center;
+    cursor: pointer;
+}
+.boundary-picker select:hover { border-color: #888; }
+.boundary-picker select:focus-visible { outline: none; }
+
+
+/* District outlines: same look as counties; Senate lines heavier over the House districts */
+.district {
+    fill: #fff;
+    stroke: #cfccc3;
+    stroke-width: 0.6;
+    vector-effect: non-scaling-stroke;
+}
+.district:hover { fill: #e6eff3; }
+.district.active { fill: #d9e8ef; }
+.district-major {
+    fill: none;
+    stroke: #9d998e;
+    stroke-width: 1.3;
+    vector-effect: non-scaling-stroke;
+}
+
+/* Toggles flow in the toolbar (overrides any old absolute positioning) */
+#map-wrap .boundary-toggle,
+#map-wrap .layer-toggle {
+    position: static;
+    transform: none;
+}
+
+/* ---- Left column: legend + filters (scrolls on its own if it runs long) ---- */
+
+#map-wrap .sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: scroll;               /* scrollbar always shown, so it's clear the column scrolls */
+    padding-right: 0.25rem;           /* keeps the scrollbar off the boxes */
+}
+
+/* Always-visible scrollbar. macOS hides scrollbars until you scroll; a styled
+   scrollbar opts out of that in Chrome, Edge and Safari. */
+#map-wrap .sidebar::-webkit-scrollbar { width: 8px; }
+#map-wrap .sidebar::-webkit-scrollbar-track { background: #f0f2f3; border-radius: 4px; }
+#map-wrap .sidebar::-webkit-scrollbar-thumb { background: #c4cdd2; border-radius: 4px; }
+#map-wrap .sidebar::-webkit-scrollbar-thumb:hover { background: #9fadb5; }
+
+/* Firefox (doesn't support the rules above) */
+@supports not selector(::-webkit-scrollbar) {
+    #map-wrap .sidebar {
+        scrollbar-width: thin;
+        scrollbar-color: #c4cdd2 #f0f2f3;
+    }
+}
+
+#map-wrap .legend {
+    position: static;
+    max-width: none;
+}
+
+/* ---- Right column: explainer, key numbers, charts ---- */
+
+.right-panels {
+    grid-area: right;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.panel-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+}
+
+.panel {
+    border: 1px solid #e2e2e2;        /* same outline as the filters box */
+    border-radius: 0.25rem;
+    padding: 0.75rem 0.9rem;
+    background: #fff;
+    font-family: var(--cwa-nav-font);
+    box-sizing: border-box;
+}
+
+.panel-title {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cwa-teal);
+}
+
+.panel-placeholder {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #888;
+}
+
+.panel--explainer { flex: none; }
+
+/* Per-layer explainer text in "About this layer" */
+.explainer-text {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: #444;
+}
+.explainer-text[hidden] { display: none; }
+.explainer-text p { margin: 0 0 0.5rem; }
+.explainer-text p:last-child { margin-bottom: 0; }
+.explainer-text a { color: var(--cwa-teal); }
+
+/* "… Read more +" at the end of the preview */
+.explainer-ellipsis { color: #888; }
+.explainer-more {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0 0.1rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--cwa-teal);
+    cursor: pointer;
+    white-space: nowrap;                /* keeps "Read more +" together on one line */
+}
+.explainer-more:hover { color: var(--cwa-teal-hover); text-decoration: underline; }
+.explainer-more:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; border-radius: 0.15rem; }
+.explainer-more-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.95rem;
+    height: 0.95rem;
+    margin-left: 0.2rem;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    line-height: 1;
+    vertical-align: -0.1rem;
+}
+
+/* Popup with the full text: same look as the welcome box, but only as tall as its text */
+.welcome.explainer-dialog {
+    width: min(34rem, calc(100vw - 2rem));
+    height: fit-content;                /* "auto" would stretch a modal dialog to the max height */
+    max-height: min(36rem, calc(100dvh - 2rem));
+}
+.explainer-dialog__body { padding-bottom: 1.25rem; }
+.explainer-dialog__body p { margin: 0 0 0.75rem; }
+.explainer-dialog__body p:last-child { margin-bottom: 0; }
+.explainer-dialog__body ul { margin: 0 0 0.75rem; padding-left: 1.2rem; }
+.panel--stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;    /* top-align so both tiles' numbers and labels line up */
+    padding: 0.5rem 0.9rem;
+}
+/* The tabbed chart panel takes whatever height is left in the column */
+.panel--chart {
+    flex: 1 1 0;
+    min-height: 14rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---- Chart tabs ---- */
+
+.chart-tabs {
+    display: flex;
+    gap: 1.25rem;
+    border-bottom: 1px solid #e3e3e3;
+    margin: -0.15rem 0 0.6rem;
+    flex: none;
+}
+
+.chart-tab {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 0.15rem solid transparent;
+    margin-bottom: -1px;               /* active underline sits on the divider */
+    padding: 0.3rem 0;
+    font-family: var(--cwa-nav-font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #777;
+    cursor: pointer;
+}
+.chart-tab:hover { color: var(--cwa-teal); }
+.chart-tab.is-active {
+    color: var(--cwa-teal);
+    border-bottom-color: var(--cwa-green);
+}
+.chart-tab:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; }
+
+/* Each tab's content fills the rest of the panel */
+.chart-view {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+.chart-view[hidden] { display: none; }
+
+/* ---- Chart contents ---- */
+
+.chart-subtitle {
+    margin: -0.2rem 0 0.4rem;
+    font-size: 0.78rem;
+    color: #666;
+}
+.chart-hint {
+    margin: 0.3rem 0 0;
+    font-size: 0.72rem;
+    color: #888;
+}
+.chart-body {
+    flex: 1 1 0;             /* size from the panel, not from the SVG inside it */
+    min-height: 0;           /* lets the chart shrink with its panel */
+    position: relative;
+    overflow: hidden;
+}
+.chart-body svg { display: block; }
+
+.chart-axis text { font-size: 0.68rem; fill: #666; font-family: var(--cwa-nav-font); }
+.chart-axis line, .chart-axis path { stroke: #bbb; }
+.chart-grid line { stroke: #eee; }
+.chart-axis-label { font-size: 0.68rem; fill: #888; font-family: var(--cwa-nav-font); }
+
+.chart-line {
+    fill: none;
+    stroke: #8a8a8a;
+    stroke-width: 1.2;
+}
+.chart-standard {
+    stroke: #99000d;
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+}
+.chart-standard-label {
+    font-size: 0.68rem;
+    fill: #99000d;
+    font-family: var(--cwa-nav-font);
+}
+.chart-focus {
+    fill: none;
+    stroke: #111;
+    stroke-width: 1.5;
+    pointer-events: none;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--cwa-teal);
+    line-height: 1.1;
+}
+.stat-label {
+    font-size: 0.82rem;
+    color: #444;
+    margin-top: 0.15rem;
+    line-height: 1.3;
+}
+.stat-note {
+    font-size: 0.7rem;
+    color: #888;
+    margin-top: 0.3rem;
+    line-height: 1.3;
+}
+
+/* ==========================================================================
+   Data & Methodology tab: article in a white column, "On this page" links on the right
+   ========================================================================== */
+
+.docs-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 46rem) 12rem;   /* article | table of contents */
+    justify-content: center;                          /* wide margins on both sides */
+    align-items: start;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    padding: 2rem var(--page-gutter) 4rem;
+    font-family: var(--cwa-nav-font);
+}
+
+.docs-article {
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 0.25rem;
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3.5rem);
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+.docs-title {
+    margin: 0 0 0.75rem;
+    font-size: 2rem;
+    line-height: 1.2;
+    color: var(--cwa-teal);
+}
+.docs-intro { margin: 0 0 1rem; color: #444; }
+
+.docs-section {
+    padding-top: 1.75rem;
+    margin-top: 1.75rem;
+    border-top: 1px solid #eee;
+    scroll-margin-top: 1rem;          /* jump lands with a little room above the heading */
+}
+.docs-section h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.4rem;
+    color: var(--cwa-teal);
+}
+.docs-section h3 { margin: 1.5rem 0 0.5rem; font-size: 1.1rem; color: #222; }
+.docs-article p { margin: 0 0 1rem; }
+.docs-article a { color: var(--cwa-teal); }
+.docs-article ul, .docs-article ol { padding-left: 1.4rem; margin: 0 0 1rem; }
+
+/* One link per line (handy for a data sources list) */
+.docs-article .link-lines { list-style: none; padding: 0; }
+
+/* Table of contents: stays in view while scrolling */
+.docs-toc {
+    position: sticky;
+    top: 1.5rem;
+    font-size: 0.85rem;
+}
+.docs-toc__title {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    color: #333;
+}
+.docs-toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid #e2e2e2;
+}
+.docs-toc a {
+    display: block;
+    padding: 0.3rem 0 0.3rem 0.8rem;
+    margin-left: -2px;                 /* active bar sits on top of the grey line */
+    border-left: 2px solid transparent;
+    color: #666;
+    text-decoration: none;
+}
+.docs-toc a:hover { color: var(--cwa-teal); }
+.docs-toc a.is-active {
+    color: var(--cwa-teal);
+    font-weight: 600;
+    border-left-color: var(--cwa-teal);
+}
+.docs-toc a:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Narrow screens: contents move above the article */
+@media (max-width: 56.25em) {
+    .docs-layout { grid-template-columns: minmax(0, 1fr); }
+    .docs-toc { position: static; order: -1; }
+    .docs-toc ul { display: flex; flex-wrap: wrap; gap: 0 1rem; border-left: none; }
+    .docs-toc a { padding-left: 0; border-left: none; margin-left: 0; }
+}
+
+/* ==========================================================================
+   Welcome / how-to box (opens on load; the (i) button re-opens it)
+   ========================================================================== */
+
+/* (i) button: sits above the zoom buttons, with a little space between */
+#map-wrap .controls .controls-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cwa-teal);
+    margin-bottom: 0.4rem;
+}
+
+.welcome {
+    width: min(38rem, calc(100vw - 2rem));
+    height: min(36rem, calc(100dvh - 2rem));     /* square-ish on most screens */
+    padding: 0;
+    border: 1px solid #e2e2e2;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.9);         /* slightly see-through */
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+    font-family: var(--cwa-nav-font);
+    color: #333;
+    overflow: hidden;
+}
+.welcome[open] {
+    display: flex;
+    flex-direction: column;
+}
+.welcome::backdrop { background: rgba(20, 40, 50, 0.25); }
+.welcome:focus { outline: none; }   /* the box takes focus on open, so the X doesn't show a focus ring */
+
+.welcome__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem 0.5rem;
+    flex: none;
+}
+.welcome__title {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--cwa-teal);
+}
+.welcome__close {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0 0.25rem;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    border-radius: 0.25rem;
+}
+.welcome__close:hover { color: #111; background: rgba(0, 0, 0, 0.05); }
+.welcome__close:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; }
+
+/* Content scrolls inside the box if it runs long */
+.welcome__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0.25rem 1.25rem 1rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+.welcome__body a { color: var(--cwa-teal); }
+
+.welcome__foot {
+    flex: none;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+.welcome__remember {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    color: #555;
+    cursor: pointer;
+}
+.welcome__remember input { margin: 0; cursor: pointer; }
+
+/* ==========================================================================
+   Data filters
+   ========================================================================== */
+
+.filters {
+    border: 1px solid #e2e2e2;        /* quieter than the legend so the legend reads first */
+    border-radius: 0.25rem;
+    background: #fafafa;
+    font-size: 0.82rem;
+}
+
+.filters-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 0.75rem;
+    background: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--cwa-teal);
+    cursor: pointer;
+}
+.filters-toggle:hover { background: #f5f8fa; }
+.filters-toggle:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: -2px; }
+.filters-caret { transition: transform 0.15s; }
+.filters-toggle.open .filters-caret { transform: rotate(180deg); }
+
+.filters-panel {
+    padding: 0.6rem 0.75rem 0.75rem;
+    color: #444;
+}
+.filters-panel[hidden] { display: none; }
+
+.filters-intro { margin-bottom: 0.6rem; }
+.filters-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--cwa-teal);
+}
+.filters-hint {
+    margin: 0.15rem 0 0;
+    font-size: 0.75rem;
+    color: #666;
+    line-height: 1.35;
+}
+
+.filter-group {
+    border: none;
+    margin: 0 0 0.75rem;
+    padding: 0;
+}
+.filter-group legend {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    padding: 0;
+    color: #333;
+}
+
+.filter-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin: 0.2rem 0;
+    line-height: 1.3;
+}
+.filter-option input { margin: 0.15rem 0 0; flex: none; }
+.filter-option label { cursor: pointer; }
+
+.filter-row { display: flex; gap: 0.6rem; }
+
+.filter-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    flex: 1;
+    min-width: 0;
+}
+.filter-select label { color: #555; font-size: 0.75rem; }
+.filter-select select {
+    font: inherit;
+    padding: 0.25rem;
+    border: 1px solid #bbb;
+    border-radius: 0.2rem;
+    background: #fff;
+    width: 100%;
+}
+
+.filters-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #eee;
+    font-size: 0.75rem;
+}
+.filters-count { color: #555; }
+.filters-reset {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--cwa-teal);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.filters-empty { color: #666; margin: 0; }
+
+/* ==========================================================================
+   Medium screens (under ~1100px): right panels move below the map
+   ========================================================================== */
+
+@media (max-width: 68.75em) {
+    #map-wrap {
+        grid-template-columns: minmax(13rem, 16rem) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            "sidebar toolbar"
+            "sidebar map"
+            "right   right";
+        height: auto;
+    }
+    #map {
+        height: calc(100dvh - var(--header-height) - var(--below-map-reserve) - 4rem);
+    }
+    .right-panels { overflow: visible; }
+    .panel--chart { flex: none; height: 22rem; }
+}
+
+/* ==========================================================================
+   Narrow screens (under ~900px): everything stacks
+   ========================================================================== */
+
+@media (max-width: 56.25em) {
+    /* Header: logo + three-bar menu button; the tabs drop down below when it's opened */
+    :root { --header-height: 3.75rem; }
+    .site-header { position: relative; z-index: 20; }
+    .site-header__inner { gap: 1rem; }
+    .site-logo img { height: 2.4rem; }
+
+    .nav-toggle { display: inline-flex; }
+
+    .site-tabs {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 0.25rem var(--page-gutter) 0.75rem;
+        background: #fff;
+        border-bottom: 1px solid #e6e6e6;
+        box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.1);
+    }
+    .site-header.nav-open .site-tabs { display: flex; }
+    .site-tab {
+        text-align: left;
+        padding: 0.75rem 0;
+        font-size: 1.05rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .site-tab:last-child { border-bottom: none; }
+    .site-tab.is-active {
+        border-bottom-color: #f0f0f0;
+        box-shadow: inset 0.25rem 0 0 var(--cwa-green);   /* green bar on the left marks the current page */
+        padding-left: 0.75rem;
+    }
+
+    #map-wrap {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas:
+            "toolbar"
+            "map"
+            "sidebar"
+            "right";
+        height: auto;
+    }
+    #map { height: auto; max-height: 80vh; }
+    #map-wrap .sidebar { overflow: visible; }
+
+    .filters-title { display: none; }           /* the dropdown button replaces it */
+    .filters-panel { border-top: 1px solid #e3e3e3; }
+}
+/* ==========================================================================
+   Data & Methodology content
+   ========================================================================== */
+
+.docs-meta {
+    margin: -0.25rem 0 1rem;
+    font-size: 0.85rem;
+    color: #777;
+}
+.docs-article code {
+    font-size: 0.9em;
+    background: #f3f5f6;
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.2rem;
+}
+.docs-article li { margin-bottom: 0.4rem; }
+.docs-article li:last-child { margin-bottom: 0; }
+
+/* Placeholder text still to be written (remove the class when filled in) */
+.todo { background: #fff3c4; padding: 0 0.2rem; }
+
+/* Sources: name on its own line, description underneath */
+.docs-sources { margin: 0 0 1.25rem; }
+.docs-sources > div { padding: 0.6rem 0; border-bottom: 1px solid #f0f0f0; }
+.docs-sources > div:last-child { border-bottom: none; }
+.docs-sources dt { font-weight: 700; color: #222; }
+.docs-sources dd { margin: 0.15rem 0 0; color: #444; }
+
+/* Key takeaway box */
+.docs-callout {
+    border-left: 4px solid var(--cwa-green);
+    background: #f4f9ef;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #2f4a1c;
+}
+
+/* Sample of the "faded" map style, used inline in text */
+.faded-sample { opacity: 0.45; font-weight: 700; }
+
+/* Tables */
+.docs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0 1.25rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+.docs-table caption {
+    caption-side: top;
+    text-align: left;
+    font-weight: 700;
+    color: #222;
+    padding-bottom: 0.5rem;
+}
+.docs-table th, .docs-table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid #ececec;
+}
+.docs-table thead th {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #666;
+    border-bottom: 2px solid #ddd;
+}
+.docs-table--compact { width: auto; min-width: 18rem; }
+
+/* Problem categories: each row tinted with its legend color */
+.docs-table--groups .num { width: 2.5rem; text-align: center; color: #777; font-variant-numeric: tabular-nums; }
+.docs-table--groups tbody th { font-weight: 700; color: #222; white-space: nowrap; }
+.docs-table--groups tbody tr {
+    background: color-mix(in srgb, var(--swatch) 9%, #fff);
+}
+.docs-table--groups tbody td.num {
+    border-left: 5px solid var(--swatch);
+}
+.docs-table--groups .swatch {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-right: 0.5rem;
+    border-radius: 2px;
+    background: var(--swatch);
+    vertical-align: -0.05rem;
+}
+
+@media (max-width: 36em) {
+    .docs-table--groups tbody th { white-space: normal; }
+    .docs-table--groups .swatch { display: none; }   /* the colored row edge is enough */
+    .docs-table th, .docs-table td { padding: 0.5rem 0.4rem; }
+}
+
+/* ==========================================================================
+   Welcome box content
+   ========================================================================== */
+
+.welcome__body h3 {
+    margin: 1rem 0 0.4rem;
+    font-size: 1rem;
+    color: #222;
+}
+.welcome__body h3:first-child { margin-top: 0.25rem; }
+.welcome__body p { margin: 0 0 0.75rem; }
+
+.welcome-list { margin: 0 0 0.75rem; padding-left: 1.2rem; }
+.welcome-list li { margin-bottom: 0.35rem; }
+
+/* Tiny sketch of the three-column layout */
+.welcome-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 1.2fr;
+    gap: 0.3rem;
+    margin: 0.25rem 0 0.6rem;
+}
+.welcome-layout span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 2.6rem;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--cwa-teal);
+    background: rgba(31, 111, 146, 0.07);
+    border: 1px solid rgba(31, 111, 146, 0.2);
+    border-radius: 0.25rem;
+}
+
+.welcome-more {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 0.88rem;
+    color: #555;
+}
+.welcome-i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.05rem;
+    height: 1.05rem;
+    border: 1.5px solid var(--cwa-teal);
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--cwa-teal);
+    vertical-align: 0.05rem;
+}
+
+/* ==========================================================================
+   Explore Contamination Near You
+   First load: just the search, centered. After a selection (.has-result):
+     search | map | districts
+     kpis   | map | districts
+   ========================================================================== */
+
+.explore {
+    font-family: var(--cwa-nav-font);
+    color: #333;
+    padding: 0.75rem var(--page-gutter);
+    box-sizing: border-box;
+}
+
+/* ---- Search box ---- */
+
+.explore-search {
+    view-transition-name: explore-search;      /* lets the box glide to the corner */
+    max-width: 34rem;
+    margin: 10vh auto 0;
+}
+.explore-title {
+    margin: 0 0 0.4rem;
+    font-size: 1.75rem;
+    color: var(--cwa-teal);
+}
+.explore-instructions { margin: 0 0 1rem; color: #555; line-height: 1.45; }
+
+.explore-modes {
+    display: flex;
+    gap: 1.25rem;
+    border-bottom: 1px solid #e3e3e3;
+    margin-bottom: 0.75rem;
+}
+.explore-mode {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 0.15rem solid transparent;
+    margin-bottom: -1px;
+    padding: 0.35rem 0;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #777;
+    cursor: pointer;
+}
+.explore-mode:hover { color: var(--cwa-teal); }
+.explore-mode.is-active { color: var(--cwa-teal); border-bottom-color: var(--cwa-green); }
+.explore-mode:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; }
+
+.explore-form[hidden], .explore-area[hidden] { display: none; }
+
+.explore-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 0.6rem;
+    flex: 1;
+    min-width: 0;
+}
+.explore-field > span { font-size: 0.8rem; font-weight: 600; color: #444; }
+.explore-field input {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #bbb;
+    border-radius: 0.25rem;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+}
+.explore-field input:focus { outline: 2px solid var(--cwa-teal); outline-offset: 0; border-color: var(--cwa-teal); }
+.explore-field-row { display: flex; gap: 0.6rem; }
+.explore-field--zip { flex: 0 0 6.5rem; }
+
+.explore-submit {
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--cwa-teal);
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.4rem;
+    cursor: pointer;
+}
+.explore-submit:hover { background: var(--cwa-teal-hover); }
+.explore-submit:disabled { opacity: 0.6; cursor: wait; }
+.explore-submit:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; }
+
+.explore-status { margin: 0.5rem 0 0; font-size: 0.85rem; color: #555; min-height: 1em; }
+.explore-status:empty { display: none; }
+.explore-status.is-error { color: #99000d; }
+
+.explore-matches { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.explore-matches button {
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    font-size: 0.88rem;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.25rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    background: #fff;
+    cursor: pointer;
+}
+.explore-matches button:hover { border-color: var(--cwa-teal); color: var(--cwa-teal); }
+
+.explore-privacy { margin: 0.75rem 0 0; font-size: 0.75rem; color: #888; }
+
+/* County / district suggestions */
+.explore-area { position: relative; }
+.explore-suggestions {
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(100% - 0.5rem);
+    z-index: 5;
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.12);
+    max-height: 18rem;
+    overflow-y: auto;
+}
+.explore-suggestions[hidden] { display: none; }
+.explore-suggestions li[role=option] {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.45rem 0.7rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.explore-suggestions li.is-active,
+.explore-suggestions li[role=option]:hover { background: #eef5f8; }
+.explore-sugg-type { color: #888; font-size: 0.78rem; white-space: nowrap; }
+.explore-suggestion-empty { padding: 0.45rem 0.7rem; color: #888; font-size: 0.85rem; }
+
+/* ---- Results: hidden until something is selected ---- */
+
+.explore:not(.has-result) .explore-kpis,
+.explore:not(.has-result) .explore-map-wrap,
+.explore:not(.has-result) .explore-districts { display: none; }
+
+.explore.has-result {
+    display: grid;
+    grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr) minmax(14rem, 18rem);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+        "search map districts"
+        "kpis   map districts";
+    gap: 0.75rem var(--gap);
+    height: calc(100dvh - var(--header-height));
+}
+.explore.has-result .explore-search { grid-area: search; margin: 0; max-width: none; }
+.explore.has-result .explore-intro { display: none; }          /* the corner box is just the search */
+.explore.has-result .explore-privacy { display: none; }
+
+.explore-kpis {
+    grid-area: kpis;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-height: 0;
+    overflow-y: auto;
+}
+.explore-kpi { padding: 0.65rem 0.9rem; }
+.explore-kpi .stat-value { font-size: 1.6rem; }
+.explore-kpi-heading { font-weight: 600; margin: 0 0 0.35rem; }
+
+.explore-radius {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    color: #555;
+}
+.explore-radius[hidden] { display: none; }
+.explore-radius > span { font-weight: 700; color: #333; margin-right: 0.15rem; }
+.explore-radius button {
+    font: inherit;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid #bbb;
+    border-radius: 999px;
+    background: #fff;
+    color: #444;
+    cursor: pointer;
+}
+.explore-radius button:hover { border-color: var(--cwa-teal); }
+.explore-radius button.is-active { background: var(--cwa-teal); border-color: var(--cwa-teal); color: #fff; }
+
+.explore-systems { margin: 0; padding-left: 1.1rem; font-size: 0.82rem; }
+.explore-systems li { margin-bottom: 0.4rem; }
+.explore-systems strong { display: block; color: #222; }
+.explore-sys-meta { display: block; color: #777; font-size: 0.75rem; }
+.explore-sys-result { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; }
+.explore-swatch { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 2px; flex: none; box-sizing: border-box; }
+
+/* Map */
+.explore-map-wrap {
+    grid-area: map;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+}
+.explore-place { margin-bottom: 0.3rem; }
+.explore-map-box {
+    position: relative;                    /* the tooltip is positioned against this */
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+}
+#explore-map { display: block; width: 100%; height: 100%; }
+.explore-tooltip { white-space: normal; max-width: 16rem; z-index: 3; }
+.explore-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    color: #555;
+}
+.explore-legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
+
+/* Districts */
+.explore-districts {
+    grid-area: districts;
+    min-height: 0;
+    overflow-y: auto;
+    font-size: 0.85rem;
+}
+.explore-districts:empty { border-color: transparent; background: transparent; }
+.explore-dist-list { list-style: none; margin: 0 0 0.75rem; padding: 0; }
+.explore-dist-list > li { padding: 0.45rem 0; border-bottom: 1px solid #eee; }
+.explore-dist-label { display: block; font-size: 0.72rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.03em; }
+.explore-dist-value { display: block; color: #222; font-weight: 600; }
+.explore-rep { color: #444; }
+.explore-rep a { color: var(--cwa-teal); }
+.explore-dist-note { margin: 0 0 0.3rem; color: #666; font-size: 0.78rem; }
+.explore-dist-links { margin: 0; padding-left: 1rem; font-size: 0.78rem; }
+.explore-dist-links a { color: var(--cwa-teal); }
+
+/* Medium screens: districts move under the map */
+@media (max-width: 68.75em) {
+    .explore.has-result {
+        grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr);
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+            "search map"
+            "kpis   map"
+            "kpis   districts";
+        height: auto;
+    }
+    .explore-map-wrap { height: 70vh; }
+    .explore-kpis { overflow: visible; }
+}
+
+/* Narrow screens: everything stacks */
+@media (max-width: 56.25em) {
+    .explore-search { margin-top: 2rem; }
+    .explore.has-result {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "search" "map" "kpis" "districts";   /* map right under the search */
+    }
+    .explore-map-wrap { height: 65vh; }
+    .explore-swbca-mark text { font-size: 9.5px; }
+}
+
+/* ---- Explore: the three cards switch what the map shows ---- */
+
+.explore-kpis-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0.1rem 0 -0.15rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--cwa-teal);
+}
+
+.explore-kpi.is-switch {
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+.explore-kpi.is-switch:hover {
+    border-color: var(--cwa-teal);
+    box-shadow: 0 0.15rem 0.6rem rgba(31, 111, 146, 0.15);
+}
+.explore-kpi.is-switch:focus-visible { outline: 2px solid var(--cwa-teal); outline-offset: 2px; }
+
+/* The card the map is showing: teal edge + tint */
+.explore-kpi.is-active {
+    border-color: var(--cwa-teal);
+    background: #f2f8fa;
+    box-shadow: inset 0.25rem 0 0 var(--cwa-teal);
+}
+.explore-kpi.is-active:hover { box-shadow: inset 0.25rem 0 0 var(--cwa-teal), 0 0.15rem 0.6rem rgba(31, 111, 146, 0.15); }
+
+/* Card footer: "Show on the map →" / "● Shown on the map" */
+.explore-kpi-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid #eee;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--cwa-teal);
+}
+.explore-kpi:not(.is-active) .explore-kpi-cta { color: #777; }
+.explore-kpi:not(.is-active):hover .explore-kpi-cta { color: var(--cwa-teal); }
+.explore-kpi.is-active .explore-kpi-cta { border-top-color: rgba(31, 111, 146, 0.2); }
+.explore-kpi-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--cwa-teal);
+}
+
+/* "Showing ..." line under the map title */
+.explore-showing {
+    margin: -0.25rem 0 0.35rem;
+    font-size: 0.82rem;
+    color: #555;
+}
+.explore-showing strong { color: var(--cwa-teal); }
+
+.explore-legend-head { flex-basis: 100%; font-weight: 600; color: #444; }
+.explore-legend-note { flex-basis: 100%; color: #777; }
+
+/* Data-layer label in each card's top-right corner (text wraps around it) */
+.explore-kpi-tag {
+    float: right;
+    margin: 0 0 0.25rem 0.6rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #888;
+}
+.explore-kpi.is-active .explore-kpi-tag { color: var(--cwa-teal); }/* City names on the Explore map: white outline keeps them readable over colored data */
+.explore-cities text {
+    font-family: var(--cwa-nav-font);
+    fill: #2b2b2b;
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+}
+
+/* ---- Explore: private wells + Special Well and Boring Construction Areas ---- */
+
+/* Wells canvas sits behind the SVG map; the box's white background shows through both */
+.explore-map-box { background: #fff; }
+#explore-wells { position: absolute; top: 0; left: 0; }
+#explore-map { position: relative; }
+
+/* Notice in the wells card */
+.explore-swbca-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
+    padding: 0.45rem 0.55rem;
+    border-left: 3px solid #c96a00;
+    background: #fdf4e8;
+    border-radius: 0 0.2rem 0.2rem 0;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: #5a3300;
+}
+.explore-swbca-notice svg { flex: none; margin-top: 0.05rem; }
+
+/* Area names next to the hazard icons on the map */
+.explore-swbca-mark text {
+    font-family: var(--cwa-nav-font);
+    font-size: 11px;
+    font-weight: 700;
+    fill: #8a4700;
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+}
+
+/* Legend icons line up with the text */
+.explore-legend svg { flex: none; }

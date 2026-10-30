@@ -1,0 +1,8 @@
+{
+    "BaseName":"env_mn_gw_contamination_atlas",
+    "DescriptiveName":"Minnesota Groundwater Contamination Atlas",
+    "TopicCategories": [
+        "environment"
+    ],
+    "Public": true
+}
