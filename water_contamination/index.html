@@ -8,10 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <link href="map.css" rel="stylesheet">
-    <link href="header.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/map.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/header.css" rel="stylesheet">
 
     <script>
+        // All site files load from GitHub via jsDelivr. When releasing a new version,
+        // update the @v1.0 tag here and in the script/stylesheet/logo URLs in this file.
+        var DATA_URL = "https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/data/";
+
         (function () {
             var p = new URLSearchParams(window.location.search);
             var tab = p.get("tab") || (p.get("area") ? "explore" : null);
@@ -21,13 +25,13 @@
 
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
-    <script defer src="map.js"></script>
-    <script defer src="tabs.js"></script>
-    <script defer src="nav.js"></script>
-    <script defer src="welcome.js"></script>
-    <script defer src="explainer.js"></script>
-    <script defer src="docs.js"></script>
-    <script defer src="explore.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/map.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/tabs.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/Nav.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/Welcome.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/Explainer.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/Docs.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/Explore.js"></script>
 </head>
 <body>
 
@@ -36,7 +40,7 @@
         <div class="site-header__inner">
             <a class="site-logo" href="https://cleanwater.org/states/minnesota">
                 <!-- Save the Clean Water Action logo as images/cwa-logo.png -->
-                <img src="images/cwa-logo.png" alt="Clean Water Action">
+                <img src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@v1.0/water_contamination/images/cwa-logo.png" alt="Clean Water Action">
             </a>
 
             <!-- Three-bar menu button (narrow screens only; nav.js opens/closes the tabs) -->

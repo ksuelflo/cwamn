@@ -48,7 +48,7 @@ function ordinal(n) {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-fetch("data/meta.json", { cache: "no-store" })
+fetch(DATA_URL + "meta.json", { cache: "no-store" })
   .then(r => r.json())
   .then(meta => {
     const d = new Date(meta.last_updated + "T12:00:00");

@@ -24,7 +24,7 @@ const REP_LOOKUPS = [
     { label: "U.S. House: Find your representative", url: "https://www.house.gov/representatives/find-your-representative" }
 ];
 
-const WELLS_DIR = "data/wells/";            // one CSV per county, written by 06_private_wells.R
+const WELLS_DIR = DATA_URL + "wells/";      // one CSV per county, written by 06_private_wells.R
 const SWBCA_COLOR = "#c96a00";              // Special Well and Boring Construction Areas
 const WELL_DOT = "rgba(55, 65, 75, 0.45)";  // partly see-through, so clusters read darker
 
@@ -126,13 +126,13 @@ function whenDataReady(fn) {
     else window.addEventListener("mapdata:ready", fn, { once: true });
 }
 
-fetch("data/representatives.json")
+fetch(DATA_URL + "Representatives.json")
     .then(r => r.ok ? r.json() : {})
     .then(j => { representatives = j ?? {}; if (exploreSel?.kind === "address") renderDistricts(); })
     .catch(() => { representatives = {}; });
 
 // City points for map labels (MnGeo population centers, written by 01_boundaries.R)
-d3.json("data/mn_cities.geojson").then(geo => {
+d3.json(DATA_URL + "mn_cities.geojson").then(geo => {
     cities = geo.features
         .filter(f => f.geometry)
         .map(f => ({ name: f.properties.name, population: +f.properties.population || 0,
@@ -142,7 +142,7 @@ d3.json("data/mn_cities.geojson").then(geo => {
 });
 
 // Special Well and Boring Construction Areas (MDH), written by 06_private_wells.R
-d3.json("data/swbca.geojson").then(geo => {
+d3.json(DATA_URL + "swbca.geojson").then(geo => {
     swbca = geo.features
         .filter(f => f.geometry)
         .map(f => ({ f, name: f.properties.name, bounds: d3.geoBounds(f) }));

@@ -2549,12 +2549,12 @@ new ResizeObserver(entries => {
 
 Promise.all([
     d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"),
-    d3.json("data/huc8_mn.geojson"),
-    d3.json("data/impaired_waters.geojson"),
-    d3.json("data/pfas_all.geojson"),
-    d3.json("data/pfas_long.json"),
-    d3.json("data/nitrate_sites.geojson"),
-    d3.csv("data/nitrate_daily.csv", d => {
+    d3.json(DATA_URL + "huc8_mn.geojson"),
+    d3.json(DATA_URL + "impaired_waters.geojson"),
+    d3.json(DATA_URL + "pfas_all.geojson"),
+    d3.json(DATA_URL + "pfas_long.json"),
+    d3.json(DATA_URL + "nitrate_sites.geojson"),
+    d3.csv(DATA_URL + "nitrate_daily.csv", d => {
         const date = d3.timeParse("%Y-%m-%d")(d.date);
         return {
             site_id: d.site_id,
@@ -2566,16 +2566,16 @@ Promise.all([
         };
     }),
     // Long-term regional trend from R. Accepts year_med (or median_mgL) for the value.
-    d3.csv("data/region_year.csv", d => ({
+    d3.csv(DATA_URL + "region_year.csv", d => ({
         region: d.region,
         year: +d.year,
         median_mgL: +(d.year_med ?? d.median_mgL),
         n_sites: +d.n_sites
     })),
     // District outlines (optional: if a file is missing, its dropdown option is disabled)
-    d3.json("data/mn_house.geojson").catch(() => null),
-    d3.json("data/mn_senate.geojson").catch(() => null),
-    d3.json("data/mn_congress.geojson").catch(() => null)
+    d3.json(DATA_URL + "mn_house.geojson").catch(() => null),
+    d3.json(DATA_URL + "mn_senate.geojson").catch(() => null),
+    d3.json(DATA_URL + "mn_congress.geojson").catch(() => null)
 ]).then(([us, huc8, waters, pfasAll, pfasLong, nitrateSites, nitrateDaily, nitrateTrend,
           houseDists, senateDists, congressDists]) => {
     data.nitrateTrend = nitrateTrend.filter(d => d.region && isFinite(d.year) && isFinite(d.median_mgL));
