@@ -1,0 +1,54 @@
+Name,ML Hardware (linked),Designer,Primarily for Chinese market,TDP (W) (from ML Hardware (linked)),16-bit FLOP/s,8-bit OP/s,Notes,Memory,Memory bandwidth,H100e,Cost per chip (approx.),Release date,Unofficial estimated TDP (W)
+Ascend 950PR,Huawei Ascend 950PR,Huawei,True,,,1000000000000000,,,1600000000000,0.5053057099545225,,,
+Ascend 950DT,Huawei Ascend 950DT,Huawei,True,,,973000000000000,,144000000000,4000000000000,0.49166245578575035,,,
+TPU v3,Google TPU v3,Google,,450,123000000000000,123000000000000,,32000000000,900000000000,0.06215260232440627,3600.0,2018-05-18,
+TPU v4i,Google TPU v4i,Google,,175,138000000000000,138000000000000,,8000000000,614000000000,0.0697321879737241,,2020-01-01,
+A100,NVIDIA A100 SXM4 80 GB,Nvidia,,400,312000000000000,624000000000000,,80000000000,2039000000000,0.31531076301162203,12000.0,2020-11-16,
+TPU v4,Google TPU v4,Google,,340,275000000000000,275000000000000,,32000000000,1200000000000,0.13895907023749368,3900.0,2021-05-20,
+Instinct MI250X,AMD Radeon Instinct MI250X,AMD,,500,383000000000000,383000000000000,,128000000000,3280000000000,0.1935320869125821,10000.0,2021-11-08,
+Ascend 910B,Huawei Ascend 910B,Huawei,True,400,,376000000000000,"In terms of cost:
+
+""distributors are selling the Huawei 910B at above 120,000 yuan per card, while its eight-card server equivalent starts at 1.3-1.5 million yuan per server"" per Reuters. https://www.reuters.com/technology/nvidia-cuts-china-prices-huawei-chip-fight-sources-say-2024-05-24/
+
+This is $16.5k at $0.138 USD per yuan in May 2024. Possible this is a relatively high street price compared to average (bulk) purchases. Rounding to 15k.",32000000000,1228000000000,0.18999494694290045,15000.0,2022-03-17,
+A800,NVIDIA A800 SXM,Nvidia,True,400,311800000000000,624000000000000,Chinese-spec version of A100,80000000000,2040000000000,0.31531076301162203,12000.0,2022-08-11,
+H100,NVIDIA H100 SXM5 80GB,Nvidia,,700,989500000000000,1979000000000000,,80000000000,3350000000000,1.0,25000.0,2022-09-20,
+Trainium1,Amazon Trainium1,Amazon,,,190000000000000,420000000000000,"Trainium1 (and the very similar Inferentia2 chip) does not have an official TDP spec.
+
+To estimate, note that AI chips generally become 40% more efficient per year: https://epoch.ai/data-insights/ml-hardware-energy-efficiency  
+
+Trainium1/Inferentia2 and Trainium2 were separated by two years, suggesting a ~2x efficiency improvement based on trends.
+
+Trainium2 is 500W and 667 TFLOP/s in 16-bit FLOP/s. Trainium1 is 190 TFLOP/s in 16-bit (note that the Trainium1 and Trainium2 have a slightly different ratio of 16-bit to 8-bit op/s; I'm using 16-bit which is likely more representative for Trainium1).
+
+So Trainium1 TDP theoretically would be roughly 190/667 (compute ratio) * 500 W (Trainium2 wattage) * 2x (efficiency penalty for older chip) = 284W, rounded up to 300W. ",32000000000,820000000000,0.21222839818089945,,2022-10-15,300.0
+Instinct MI300A,AMD Instinct MI300A,AMD,,760,980600000000000,1961200000000000,,128000000000,5300000000000,0.9910055583628095,6700.0,2023-01-04,
+H800,NVIDIA H800 SXM5,Nvidia,True,700,989000000000000,1979000000000000,Chinese-spec version of H100,80000000000,3360000000000,1.0,30000.0,2023-03-21,
+TPU v5e,Google TPU v5e,Google,,225,197000000000000,393000000000000,We use  TDP estimate from NextPlatform of 225 W for the TPU v5e.(https://www.nextplatform.com/2025/04/09/with-ironwood-tpu-google-pushes-the-ai-accelerator-to-the-floor/),16000000000,819000000000,0.19858514401212735,2900.0,2023-08-29,225.0
+H20,NVIDIA HGX H20,Nvidia,True,400,148000000000000,296000000000000,Heavily downgraded Chinese-spec,96000000000,4000000000000,0.14957049014653864,12000.0,2023-11-09,
+TPU v5p,Google TPU v5p,Google,,540,459000000000000,918000000000000,,95000000000,2765000000000,0.46387064173825165,6400.0,2023-12-06,
+Instinct MI308X,AMD Radeon Instinct MI308X,AMD,True,750,653700000000000,653700000000000,,192000000000,10300000000000,0.33031834259727133,12000.0,2023-12-06,
+Instinct MI300X,AMD Instinct MI300X,AMD,,750,1307400000000000,2614900000000000,,192000000000,5300000000000,1.3213239009600808,12500.0,2023-12-06,
+TPU v6e,Google TPU v6e Trillium,Google,,380,918000000000000,1836000000000000,,32000000000,1640000000000,0.9277412834765033,4300.0,2024-05-14,
+Instinct MI325X,AMD Instinct MI325X,AMD,,1000,1307400000000000,2600000000000000,,256000000000,6000000000000,1.3137948458817585,15000.0,2024-10-10,
+Ascend 910C,Huawei Ascend 910C,Huawei,True,700,800000000000000,1504000000000000,"Cost notes:
+
+""Initial negotiations between Huawei and potential customers indicate that orders are likely to surpass 70,000 chips, with a total value of around $2 billion, according to the report."" Implies average price of $28k, possibly including some system/auxiliary costs
+https://www.reuters.com/technology/artificial-intelligence/huawei-readies-new-ai-chip-challenge-nvidia-china-wsj-reports-2024-08-13 
+
+In 2025, 910C CloudMatrix 384 reportedly $8 million, or ~$21k per GPU. 
+This is a server cost, implying lower price per chip. 
+https://www.trendforce.com/news/2025/07/21/news-huawei-to-unveil-cloudmatrix-384-rumored-to-deliver-2x-nvidia-gb200-nvl72-throughput/ 
+
+Synthesizing at 20k each as a rough estimate.",128000000000,3200000000000,0.7599797877716018,20000.0,2024-10-15,
+Siyuan 590,Cambricon Siyuan 590,Cambricon,True,200,,512000000000000,,,,0.25871652349671553,,2024-10-31,
+H200,NVIDIA H200 SXM,Nvidia,,700,989500000000000,1979000000000000,,141000000000,4800000000000,1.0,25000.0,2024-11-18,
+Trainium2,Amazon Trainium2,Amazon,,500,667000000000000,1299000000000000,"Unit cost per standalone chip approximately $4k, per SemiAnalysis https://newsletter.semianalysis.com/p/amazons-ai-self-sufficiency-trainium2-architecture-networking",96000000000,2900000000000,0.6563921172309247,4000.0,2024-12-03,
+B200,NVIDIA GB200,Nvidia,,1200,2500000000000000,5000000000000000,"While we name this entry ""B200"" for simplicity, B200s were largely shipped in GB200 systems and accordingly we use compute, power, and price specs for the GB200 to estimate the quantity, cost, and power of B200 chips.",186000000000,8000000000000,2.526528549772612,37000.0,2025-02-15,
+Instinct MI350X,AMD Instinct MI350X,AMD,,1000,2309600000000000,4614000000000000,,288000000000,8000000000000,2.331480545730167,23500.0,2025-06-12,
+Instinct MI355X,AMD Instinct MI355X,AMD,,1400,2516600000000000,5033200000000000,,288000000000,8000000000000,2.5433046993431025,27500.0,2025-06-12,
+B300,NVIDIA GB300 (Blackwell Ultra),Nvidia,,1400,2500000000000000,5000000000000000,"While we name this entry ""B200"" for simplicity, B200s were largely shipped in GB300 systems and accordingly we use compute, power, and price specs for the GB300 to estimate the quantity, cost, and power of B300 chips.",288000000000,8000000000000,2.526528549772612,43000.0,2025-08-22,
+TPU v7,Google TPU v7 Ironwood,Google,,960,2307000000000000,4614000000000000,,192000000000,7370000000000,2.331480545730167,13000.0,2025-11-06,
+Trainium3,Amazon Trainium3,Amazon,,700,671000000000000,2517000000000000,,,,1.2718544719555331,,2025-12-02,
+TPU v8i,Google TPU v8i,Google,,,1101000000000000,10100000000000000,,288000000000,8601000000000,5.103587670540677,17500.0,2026-08-02,
+Rubin,NVIDIA VR200 (Vera Rubin),Nvidia,,,4000000000000000,17500000000000000,,288000000000,19200000000000,8.842849924204144,,2026-09-30,

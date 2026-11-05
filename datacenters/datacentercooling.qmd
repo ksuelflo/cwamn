@@ -1,0 +1,15 @@
+---
+title: "datacentercooling"
+format: html
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data_centers_info <- read_csv("data/epoch/data_centers.csv")
+cooling_towers_products <- read_csv("data/epoch/data_center_cooling_towers.csv")
+dc_chillers <- read_csv("data/epoch/data_center_chillers.csv")
+```
+
