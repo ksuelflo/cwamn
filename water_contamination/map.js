@@ -1239,7 +1239,7 @@ function renderKeyNumbers(layerId) {
         const t1 = pctSitesOverStandard(data.nitrateVisible);
         setStatTile(statTiles[0], {
             value: formatPct(t1.pct),
-            label: `of monitored sites exceeded ${NITRATE_STANDARD} mg/L at least once`,
+            label: `of all monitored sites exceeded ${NITRATE_STANDARD} mg/L at least once`,
             note: t1.nEligible
                 ? `${t1.nEligible.toLocaleString()} sites with ${KEY_MIN_SAMPLES}+ samples in this selection`
                 : "Not enough data for this selection"

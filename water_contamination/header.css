@@ -221,6 +221,11 @@ html[data-start-tab="data"] #panel-data[hidden] { display: block; }
     stroke-width: 1.3;
     vector-effect: non-scaling-stroke;
 }
+/* Congressional districts (only 8): darker, heavier lines than the House districts */
+.congress .district {
+    stroke: #8a867b;
+    stroke-width: 1.4;
+}
 
 /* Toggles flow in the toolbar (overrides any old absolute positioning) */
 #map-wrap .boundary-toggle,
