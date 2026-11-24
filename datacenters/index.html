@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PFAS in Data Centers</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+    <script defer src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <!-- Site files load from jsDelivr (GitHub repo ksuelflo/cwamn). Before sending to the client,
+         replace "@main" with the final commit hash in all three URLs so the page never changes.
+         For local preview run: python3 dev_server.py  (serves your local copies instead) -->
+    <link href="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@main/datacenters/styling.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@main/datacenters/scrolly.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/ksuelflo/cwamn@main/datacenters/flowchart.js"></script>
+</head>
+<body>
+    <article class="story">
+
+        <!-- ===== Header ===== -->
+        <header class="story-header">
+            <h1 class="story-title">PFAS in Data Centers</h1>
+            <p class="story-byline">
+                By <span class="author">Kyle Suelflow</span> and <span class="author">Kyle Rosas</span>
+            </p>
+            <time class="story-date" datetime="2026-11-23">November 23, 2026</time>
+        </header>
+
+        <!-- ===== Introduction ===== -->
+        <section class="intro">
+            <p>
+                Large-scale, or “hyperscale,” data centers are mammoth facilities which house racks and racks of computer servers used for a variety of computing purposes, most notably cloud storage and artificial intelligence (AI) applications. On average, these facilities are 100,000 square feet in size and can exceed 1 million square feet; for reference, the average Costco is 140,000 square feet.
+            </p>
+            <p>
+                While Clean Water Action Minnesota is not inherently opposed to large-scale data centers, nor the technological advancements of the 21st century, Clean Water Action Minnesota is opposed to massive tax breaks for the ultrawealthy; exorbitant facility water and energy demands; and threatening our environment for short-term profits. 
+            </p>
+            <p>
+                Within this article are a variety of resources: first, highlighting the known locations of hyperscale data centers across the state; second, a chart showing various cooling methods for the electronic components used in hyperscale data centers; third, links to contact your legislators and take other actions.
+            </p>
+            <p>
+                Due to the lack of transparency surrounding the proposals for these hyperscale data centers, we will readily admit that not everything is known about how these facilities will impact our environment and health. At minimum, regulators must ensure that owners and developers of data centers must be fully transparent in their hyperscale data center proposals so we, as the public, have all the information we need to make informed decisions.
+            </p>
+        </section>
+
+        <!-- ===== Scrollytelling: MN map (ends on the Pine Island zoom) ===== -->
+        <!-- Each .step sets what the graphic does when it reaches mid-screen:
+               data-view="mn"                          whole state
+                 data-highlight="proposed,construction,moratorium,abandoned"   show + pop these status labels
+               data-status-colors                      green/red dots on (orange otherwise)
+               data-site="<Name in data/mn_dc_draft_2.csv>" data-zoom="n" fly to that site
+                                                              (+ its wastewater plant, if listed) -->
+        <section class="scrolly theme-dark" id="scrolly">
+            <div class="scrolly-graphic">
+                <div id="map" aria-label="Map of Minnesota data center sites"></div>
+                <!-- Legend: shown whenever the status colors are on (text box 2 onward); filled by scrolly.js (LEGEND_ITEMS) -->
+                <div id="map-legend" class="map-legend" aria-label="Map legend"></div>
+            </div>
+
+            <div class="scrolly-steps">
+                <!-- Map starts zoomed out, all dots orange. On text box 2, Rosemount (green,
+                     under construction), Apple Valley + North Mankato (red, moratorium) and
+                     Becker Data Center 1 (gray, abandoned) color in, and those plus Hermantown
+                     ("Proposed") get labels and pop.
+                     Colors stay on through the zoomed-in steps. -->
+                <div class="step" data-view="mn">
+                    <p>Hyperscale data centers are characterized by their large size (>100 MW of power) and their key usage in the rapid advancement of AI technology. In Minnesota, there are currently ~16 hyperscale data centers at various stages in the development process.</p>
+                </div>
+                <div class="step" data-view="mn" data-highlight="proposed,construction,moratorium,abandoned" data-status-colors>
+                    <p>Most hyperscalers in Minnesota are in the proposal stage. This process can take several years, as there are lots of steps along the way (environmental review, permitting, etc.) required. Some proposals are being met with moratoriums on new data centers, or have been abandoned altogether.</p>
+                </div>
+
+                <!-- Map zooms in to Rosemount -->
+                <div class="step" data-site="Rosemount Data Center" data-zoom="12" data-status-colors>
+                    <p>This data center, funded by Meta, is the only hyperscale data center actively under construction in Minnesota, with construction beginning in 2024. Its water usage is projected to be minimal, according to its <a href="https://webapp.pca.state.mn.us/eqb-search/project-detail/255536?siId=255536-PROJ0000000002" target="_blank" rel="noopener">AUAR (Alternative Urban Areawide Review)</a>.</p>
+                </div>
+                <div class="step" data-site="Rosemount Data Center" data-zoom="12" data-status-colors>
+                    <p>According to research firm <a href="https://epoch.ai/" target="_blank" rel="noopener">Epoch AI</a>, the facility is likely using Air-cooled chillers as part of its cooling process. These chillers may use harmful chemicals as refrigerants, but we are left in the dark due to the complete lack of transparency shown by data center developers.</p>
+                </div>
+
+                <!-- Map zooms in to Farmington -->
+                <div class="step" data-site="Farmington Data Center" data-zoom="12" data-status-colors>
+                    <p>This $5 billion dollar proposed data center from the developer Tract in Farmington is planning on utilizing the same waste water treatment facility as Meta’s data center in Rosemount. Unlike Meta’s data center, this one may use significantly more water.</p>
+                </div>
+                <div class="step" data-site="Farmington Data Center" data-zoom="12" data-status-colors>
+                    <p>Based on the <a href="https://www.farmingtonmn.gov/DocumentCenter/View/1234/Farmington-Tech-Park-Final-AUAR-PDF?bidId=" target="_blank" rel="noopener">AUAR</a>, we think this project will use cooling towers which evaporate water as a means to cool the data center. The AUAR states that mineral concentrations of the wastewater may be 10-100x higher than normal. This includes the concentration of any PFAS.</p>
+                </div>
+
+                <!-- Map zooms in to Hermantown -->
+                <div class="step" data-site="Hermantown Data Center" data-zoom="12" data-status-colors>
+                    <p>Google’s proposed data center in Hermantown had its SUP (Special Use Permit) approved on October 30th, removing another barrier to construction. This came after intense opposition from local organizers. </p>
+                </div>
+                <div class="step" data-site="Hermantown Data Center" data-zoom="12" data-status-colors>
+                    <p>Cooling technologies in data centers are the biggest potential source of PFAS. Google’s AUAR states that they will be PFAS free, but we are unable to confirm this. Based on the SUP, Google will use a hybrid dry-cooling system, with air-cooling used when needed. We don’t know what refrigerants will be used. Additionally, as outlined in the cooling section of this article, the AUAR mentions nothing about how the chips and server racks will be cooled. This is the biggest risk area for PFAS.</p>
+                </div>
+
+                <!-- Map zooms in to Pine Island -->
+                <div class="step" data-site="Pine Island Data Center" data-zoom="12" data-status-colors>
+                    <p>In Pine Island, another proposed data center by Google has been met with intense scrutiny. According to <a href="https://www.mprnews.org/story/2026/10/29/pine-island-google-data-center-to-get-new-environmental-review" target="_blank" rel="noopener">MPR news</a>, A lawsuit by the MCEA concerning the lack of robust environment review was settled on October 28th, resulting in a first of its kind Environmental Assessment Worksheet (EAW) conducted by the MPCA. </p>
+                </div>
+                <div class="step" data-site="Pine Island Data Center" data-zoom="12" data-status-colors>
+                    <p>Currently, an <a href="https://www.eqb.state.mn.us/environmental-review/guidance-practitioners/alternative-urban-areawide-review-auar-guidance" target="_blank" rel="noopener">AUAR</a> is the main form of environmental review for data centers in Minnesota. An AUAR evaluates several possible development scenarios across a geographic area, not a specific building or project. As a result, AUARs often leave out the details of what will actually be built. For data centers, those missing details can include the cooling system, the refrigerants it uses, and the chemicals stored on site.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== After the map: back to the light page ===== -->
+        <section class="prose">
+            <p>As the proliferation of hyperscale data centers in Minnesota accelerates, we are incredibly reliant on proper environmental review and oversight. Unfortunately, using an AUAR is not adequate–we need full environmental impact statements (EIS) completed for each proposal so regulators and the public have as much information as possible. An EIS being completed will ensure energy demands, water usage, and noise and light pollution are analyzed, among other things. </p>
+        </section>
+
+        <!-- AUAR chart: bars draw in when scrolled into view (scrolly.js, buildChart) -->
+        <figure id="chart" class="chart" aria-labelledby="chart-title">
+            <h3 id="chart-title" class="chart-title">Data center reviews almost never mention PFAS</h3>
+            <p class="chart-subtitle">Minnesota hyperscale data center sites (<span class="chart-n"></span>), by whether their environmental review (AUAR) mentions PFAS</p>
+            <div class="chart-bars" aria-hidden="true"></div>
+            <!-- Screen-reader table. The wrapper div is what's visually hidden: tables ignore
+                 width/overflow, so .sr-only on the table itself widened the page on phones. -->
+            <div class="sr-only">
+                <table class="chart-table">
+                    <caption>Minnesota data center sites by whether their AUAR mentions PFAS</caption>
+                    <thead><tr><th scope="col">AUAR</th><th scope="col">Sites</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-tooltip" role="tooltip" hidden></div>
+        </figure>
+
+        <section class="prose">
+            <p>Given what we know about PFAS and its significant health risks, it may be a surprise to see that only one proposed site includes language on PFAS in its environmental review.</p>
+            <p>Hyperscale data center proposals are cloaked in secrecy and frequently require nondisclosure agreements (NDAs) to be signed by municipal staff. As such, reporting on PFAS may not be included in any proposal and/or AUAR, and developers can easily hide any use of PFAS or other toxic chemicals. It is essential that regulators, at minimum, have access to this information so they can base any decision on the full scope of the facts at hand. </p>
+        </section>
+
+        <!-- ===== Data center cooling (light page) ===== -->
+        <section class="prose">
+            <h2 class="section-heading">Data center cooling</h2>
+            <p>Data centers house thousands of semiconductor chips which are stored in server racks. Chips cannot operate efficiently if they are not cooled properly. Data centers utilize complex cooling systems to cool the chips, and transfer that heat out of the data center and into the environment. There are several methods of doing so. The following schematic explains the most common methods, and identifies which methods are the most water intensive, power intensive, and have the highest risk for PFAS.</p>
+        </section>
+
+        <!-- ===== Cooling systems: click-through flow chart (flowchart.js) ===== -->
+        <!-- Back/Next buttons (or ←/→ keys) step through .flow-step panels.
+             data-stage="n" reveals every node up to stage n and zooms out to fit them:
+               1 hot chips · 2 air/cold plate/immersion · 3 1-/2-phase + facility water loop
+               4 chiller/dry cooler/cooling tower (+ air-/water-cooled chillers)
+             data-highlight="best" | "worst" lights one of the paths in flowchart.js (PATHS):
+               best  = hot chips → cold plate 1-phase (direct to chip) → facility water loop → dry cooler
+               worst = hot chips → 2-phase immersion → facility water loop → dry cooler + air-cooled chiller
+             data-focus="<node keys>" (phones only, ≤900px): zoom to just these nodes instead of the
+               whole chart so the text stays readable; readers can swipe sideways to see the rest -->
+        <section class="flow-stepper theme-dark" id="flow" aria-labelledby="flow-title">
+            <h2 id="flow-title" class="flow-title">How do data center cooling systems work?</h2>
+            <div class="flow-panel">
+                <div class="flow-steps" aria-live="polite">
+                    <div class="flow-step is-active" data-stage="1" data-focus="chips">
+                        <p>In typical enterprise data centers, the most frequently reported power drawn per rack was 11 kW in 2026. However, for racks built for AI development using Nvidia’s latest chips, that number rises to over 150 kW per rack. As a result, the heat generated in hyperscale data centers is immense and bigger than ever before. (<a href="https://www.datacenterknowledge.com/ai-data-centers/ai-rack-density-s-real-limits-power-cooling-failure-risk" target="_blank" rel="noopener">Data Center Knowledge</a>)</p>
+                    </div>
+                    <div class="flow-step" data-stage="2" data-focus="chips,coldplate,immersion" hidden>
+                        <p>There are 3 main ways to remove heat from the chips themselves: Air, direct to chip (DTC), and immersion. Air cooling is not powerful enough for AI server racks, so DTC and immersion cooling are becoming more utilized. For Minnesota hyperscale data centers, we are unable to find any indication on what will be used. This is a problem.</p>
+                    </div>
+                    <div class="flow-step" data-stage="3" data-focus="cp2,im1,im2" hidden>
+                        <p>There are 2 kinds of immersion and DTC cooling, one and two phase. What is important to know is their environmental impacts. All options utilize energy more efficiently than air cooling. However, they come with risks of toxic chemicals. Two-phase immersion almost certainly uses PFAS, and two phase DTC may utilize fluorinated chemicals that breakdown into TNAs, which are toxic. </p>
+                    </div>
+                    <div class="flow-step" data-stage="4" data-focus="chiller,drycooler,aircooled,watercooled" hidden>
+                        <p>After the heat exits the server hall through a facility water loop, it has to be cooled down further. The three most common options are chillers, dry coolers, and cooling towers. Cooling towers rely on evaporating significant amounts of water. Dry coolers utilize fans blowing outside air. Chillers use processes similar to air conditioning units, using refrigerants that are potentially toxic.</p>
+                    </div>
+                    <div class="flow-step" data-stage="4" data-highlight="best" data-focus="cp1,facility,drycooler" hidden>
+                        <p>In our view, the best case scenario for cooling a Minnesota hyperscale data center involves the following steps: using water-glycol direct to chip cooling (which is quickly becoming the industry standard) combined with dry-cooling. Minnesota’s cold climate allows for dry-cooling to be used almost the entire year. </p>
+                    </div>
+                    <div class="flow-step" data-stage="4" data-highlight="worst" data-focus="im2,facility,drycooler" hidden>
+                        <p>On the other hand, the worst case scenario utilizes two-phase immersion cooling. This is becoming more popular due to its relatively low water and energy demand combined with its ability to cool down the most power intensive AI server racks. However, PFAS is used in the liquid solution, with risks of leakage during maintenance and installation that could contaminate our groundwater. </p>
+                    </div>
+                </div>
+                <nav class="flow-nav" aria-label="Flow chart steps">
+                    <button type="button" class="flow-btn flow-prev" aria-label="Previous step">
+                        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+                    </button>
+                    <span class="flow-count" aria-hidden="true"></span>
+                    <button type="button" class="flow-btn flow-next" aria-label="Next step">
+                        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                </nav>
+            </div>
+            <div class="flow-graphic">
+                <p class="flow-swipe-hint" aria-hidden="true">← Swipe the chart to see more →</p>
+                <svg class="flow-svg" role="img" aria-label="Flow chart of data center cooling with power and water ratings: heat from chips moves through air, cold plate, or immersion cooling (each 1- or 2-phase), into a facility water loop, then out through a chiller, dry cooler, or cooling tower. Two-phase cooling, chillers, and cooling towers are flagged as possible PFAS sources."></svg>
+                <!-- Legend: filled by flowchart.js -->
+                <ul class="flow-legend" aria-hidden="true"></ul>
+            </div>
+        </section>
+
+        <!-- ===== Conclusion (light page) ===== -->
+        <section class="prose conclusion">
+            <p>A critical piece of the hyperscale data center issue is having strong and proper environmental review. As these facilities continue to be proposed, every developer is going to be looking for the path of least resistance to build these data centers. Environmental impact statements will ensure we have the best information to make these decisions for our communities. This will allow us to avoid what happened in Hermantown, where the initial AUAR made no mention of how the technology components will be cooled, which is the biggest PFAS risk. If everything in a data center proposal is above-board, the developer and owner should have no problem sharing that information with regulators.</p>
+            <p>We know what’s wrong with corporate welfare and the environmental degradation caused by large-scale data centers. Fortunately, we also know solutions to make this a more equitable situation which benefits Minnesotans, not corporations: require hyperscale data centers to use the best technology available to use as little water as possible; require water be treated prior to discharge from the facility; require onsite carbon-free energy production; and ensure people and farmlands get water before data centers, especially in drought conditions. Join us here [hyperlink to website once updated] and contact your legislators to demand a two-year moratorium and robust regulations on these facilities.</p>
+        </section>
+
+    </article>
+</body>
+</html>

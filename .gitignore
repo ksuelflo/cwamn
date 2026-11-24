@@ -1,0 +1,8 @@
+# macOS / R clutter
+.DS_Store
+.Rhistory
+.RData
+.Rproj.user/
+
+# Data center hydrography downloads (~1 GB); get_hydro_layers.R re-downloads them
+datacenters/data/raw/
